@@ -8,13 +8,13 @@ int main(int ac, char **av)
 		std::cerr << "usage: ./ircserv <port> <password>" << std::endl;
 		return 1;
 	}
-	// Server ser;
-	std::cout << "---- SERVER ----" << std::endl;
+	Server server(av[1], av[2]);
 	try{
-		
+		server.startServer();
 	}
 	catch(const std::exception& e){
-		
+		server.CloseFds();
+		std::cerr << e.what() << std::endl;
 	}
 	std::cout << "The Server Closed!" << std::endl;
 	return 0;
