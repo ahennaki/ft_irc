@@ -22,9 +22,10 @@ class Server {
 	public:
 		Server(std::string port, std::string password);
 		~Server();
+		bool validPort();
 		void startServer();
 		void acceptClient();
-		void getData(int fd);
+		void getMessage(int fd);
 		void ClearClients(int fd);
 		void CloseFds();
 };

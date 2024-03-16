@@ -9,6 +9,8 @@ int main(int ac, char **av)
 		return 1;
 	}
 	Server server(av[1], av[2]);
+	if (!server.validPort())
+		return 1;
 	try{
 		server.startServer();
 	}
