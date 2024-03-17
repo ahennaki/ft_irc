@@ -11,6 +11,11 @@
 #include <string>
 #include <sstream>
 #include "client.hpp"
+// #include "channel.hpp"
+
+typedef std::vector<Client>::iterator client_it;
+typedef std::vector<struct pollfd>::iterator pfd_it;
+
 
 class Server {
 	private:

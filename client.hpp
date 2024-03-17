@@ -1,11 +1,14 @@
 class Client {
 	private:
-		int Fd;
-		std::string IPadd;
+		int fd;
+		std::string ipAdd;
+		std::string nickName;
+		std::string userName;
+		std::string realName;
 	public:
-		Client(){};
-		int GetFd(){return Fd;}
+		Client() {};
+		int GetFd() {return fd;}
 
-		void SetFd(int fd){Fd = fd;}
-		void setIpAdd(std::string ipadd){IPadd = ipadd;}
+		void SetFd(int fd) {this->fd = fd;}
+		void setIpAdd(std::string ipadd) {ipAdd = ipadd;}
 };

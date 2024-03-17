@@ -124,24 +124,30 @@ void Server::getMessage(int fd)
 }
 
 void Server::ClearClients(int fd) {
-	for (size_t i = 0; i < pfd.size(); i++) {
-		if (pfd[i].fd == fd) {
-			pfd.erase(pfd.begin() + i);
+	pfd_it p_it = pfd.begin();
+	while (p_it != pfd.end()) {
+		if ((*p_it).fd == fd) {
+			pfd.erase(p_it);
 			break;
 		}
+		p_it++;
 	}
-	for (size_t i = 0; i < clients.size(); i++) {
-		if (clients[i].GetFd() == fd) {
-			clients.erase(clients.begin() + i);
+
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		if ((*it).GetFd() == fd) {
+			clients.erase(it);
 			break;
 		}
+		it++;
 	}
 }
 
 void Server::CloseFds(){
-	for(size_t i = 0; i < clients.size(); i++) {
-		std::cout << "Client \"" << clients[i].GetFd() << "\" Disconnected" << std::endl;
-		close(clients[i].GetFd());
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		std::cout << "Client \"" << (*it).GetFd() << "\" Disconnected" << std::endl;
+		close((*it).GetFd());
 	}
 	if (serverSocket != -1) {
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;

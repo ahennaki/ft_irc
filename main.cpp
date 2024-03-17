@@ -18,6 +18,6 @@ int main(int ac, char **av)
 		server.CloseFds();
 		std::cerr << e.what() << std::endl;
 	}
-	std::cout << "The Server Closed!" << std::endl;
+	std::cout << "Server closed." << std::endl;
 	return 0;
 }
