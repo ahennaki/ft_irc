@@ -11,11 +11,11 @@
 #include <string>
 #include <sstream>
 #include "client.hpp"
-// #include "channel.hpp"
+#include "channel.hpp"
 
-typedef std::vector<Client>::iterator client_it;
 typedef std::vector<struct pollfd>::iterator pfd_it;
-
+typedef std::vector<Client>::iterator client_it;
+typedef std::vector<Channel>::iterator channel_it;
 
 class Server {
 	private:
@@ -24,6 +24,7 @@ class Server {
 		int serverSocket;
 		std::vector<struct pollfd> pfd;
 		std::vector<Client> clients;
+		std::vector<Channel> channels;
 	public:
 		Server(std::string port, std::string password);
 		~Server();
@@ -33,4 +34,6 @@ class Server {
 		void getMessage(int fd);
 		void ClearClients(int fd);
 		void CloseFds();
+		void addClient(int fd, std::string nickName, std::string userName, std::string realName);
+		void addChannel(std::string name, std::string topic);
 };

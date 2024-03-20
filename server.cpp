@@ -97,7 +97,7 @@ void Server::acceptClient()
 
 	pollfd polFd = {incofd, POLLIN, 0};
 
-	cli.SetFd(incofd);
+	cli.setFd(incofd);
 	cli.setIpAdd(inet_ntoa((serverAddr.sin_addr)));
 	clients.push_back(cli);
 	pfd.push_back(polFd);
@@ -135,7 +135,7 @@ void Server::ClearClients(int fd) {
 
 	client_it it = clients.begin();
 	while (it != clients.end()) {
-		if ((*it).GetFd() == fd) {
+		if ((*it).getFd() == fd) {
 			clients.erase(it);
 			break;
 		}
@@ -146,8 +146,8 @@ void Server::ClearClients(int fd) {
 void Server::CloseFds(){
 	client_it it = clients.begin();
 	while (it != clients.end()) {
-		std::cout << "Client \"" << (*it).GetFd() << "\" Disconnected" << std::endl;
-		close((*it).GetFd());
+		std::cout << "Client \"" << (*it).getFd() << "\" Disconnected" << std::endl;
+		close((*it).getFd());
 	}
 	if (serverSocket != -1) {
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;

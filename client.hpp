@@ -7,8 +7,15 @@ class Client {
 		std::string realName;
 	public:
 		Client() {};
-		int GetFd() {return fd;}
+		int getFd() {return fd;}
+		std::string getIpadd() {return ipAdd;}
+		std::string getNickname() {return nickName;}
+		std::string getUsername() {return userName;}
+		std::string getRealname() {return realName;}
 
-		void SetFd(int fd) {this->fd = fd;}
+		void setFd(int fd) {this->fd = fd;}
 		void setIpAdd(std::string ipadd) {ipAdd = ipadd;}
+		void setNickname(std::string nickName) {this->nickName = nickName;}
+		void setUsername(std::string userName) {this->userName = userName;}
+		void setRealname(std::string realName) {this->realName = realName;}
 };
