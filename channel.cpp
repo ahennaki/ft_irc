@@ -4,10 +4,10 @@ bool Channel::isAdmin(Client client) {
 	admin_it it = admins.begin();
 	while (it != admins.end()) {
 		if (!((*it).getNickname()).compare(client.getNickname()))
-			return 1;
+			return true;
 		it++;
 	}
-	return 0;
+	return false;
 }
 
 void Server::addChannel(std::string name, std::string topic) {

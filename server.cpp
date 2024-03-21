@@ -23,14 +23,14 @@ Server::Server(std::string port, std::string password) : port(port), password(pa
 bool Server::validPort(){
 	if (port.find_first_not_of("0123456789") != std::string::npos) {
 		std::cerr << "invalide port: \"should be integer\"" << std::endl;
-		return 0;
+		return false;
 	}
 	int prt = toInt(port);
 	if (prt < 0 || prt > 65535) {
 		std::cerr << "invalide port: \"should be between 0 and 65535\"" << std::endl;
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 Server::~Server() {}
@@ -63,7 +63,7 @@ void Server::startServer() {
 	pollfd polFd = {serverSocket, POLLIN, 0};
     pfd.push_back(polFd);
 
-	while (1) {
+	while (true) {
 		if (poll(&pfd[0], pfd.size(), -1) == -1)
 			throw (std::runtime_error("Error: poll faild."));
 		for (size_t i = 0; i < pfd.size(); i++) {

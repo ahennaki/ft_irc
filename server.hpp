@@ -25,15 +25,19 @@ class Server {
 		std::vector<struct pollfd> pfd;
 		std::vector<Client> clients;
 		std::vector<Channel> channels;
+		
 	public:
 		Server(std::string port, std::string password);
 		~Server();
+
 		bool validPort();
 		void startServer();
 		void acceptClient();
 		void getMessage(int fd);
+
+		void addClient(int fd, std::string nickName, std::string userName, std::string realName);
 		void ClearClients(int fd);
 		void CloseFds();
-		void addClient(int fd, std::string nickName, std::string userName, std::string realName);
+
 		void addChannel(std::string name, std::string topic);
 };
