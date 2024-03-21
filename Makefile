@@ -5,12 +5,13 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 RM = rm -rf
 
-SRCS = main.cpp server.cpp
+SRCS = main.cpp src/server.cpp
+INC = inc/server.hpp 
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
-%.o: %.cpp server.hpp
+%.o: %.cpp $(INC)
 	${CC} ${CFLAGS} -c $< -o $@
 
 $(NAME): $(OBJS)
