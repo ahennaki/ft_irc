@@ -134,6 +134,8 @@ void Server::execute(std::string cmd, int fd) {
 	std::vector<std::string> str = splitCmd(cmd);
 	if (str[0] == "PASS")
 		passCmd(fd, str);
+	else if (str[0] == "NICK")
+		nickCmd(fd, str);
 }
 
 void Server::replies(int fd, std::string reply)
@@ -141,6 +143,12 @@ void Server::replies(int fd, std::string reply)
 	std::cout << "Response:\n" << reply;
 	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
 		std::cerr << "Response send() faild" << std::endl;
+}
+
+
+void Server::registerClient(int fd) {
+	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty())
+		getClient(fd)->setRegistred(true);
 }
 
 void Server::clearClient(int fd) {

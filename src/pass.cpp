@@ -9,4 +9,5 @@ void Server::passCmd(int fd, std::vector<std::string> cmd) {
 		else
 			replies(fd, ERR_INCORPASS(std::string("*")));
 	}
+	registerClient(fd);
 }

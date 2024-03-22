@@ -46,9 +46,14 @@ class Server {
 		void closeFds();
 
 		void addChannel(std::string name, std::string topic);
-		void passCmd(int fd, std::vector<std::string> pass);
+
+		void passCmd(int fd, std::vector<std::string> cmd);
+		void nickCmd(int fd, std::vector<std::string> cmd);
 		bool isNickUsed(std::string nick);
+
 		void execute(std::string cmd, int fd);
+		void registerClient(int fd);
+		
 		void replies(int fd, const std::string reply);
 };
 
