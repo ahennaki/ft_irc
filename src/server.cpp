@@ -136,6 +136,8 @@ void Server::execute(std::string cmd, int fd) {
 		passCmd(fd, str);
 	else if (str[0] == "NICK")
 		nickCmd(fd, str);
+	else if (str[0] == "USER")
+		userCmd(fd, str);
 }
 
 void Server::replies(int fd, std::string reply)
@@ -147,8 +149,10 @@ void Server::replies(int fd, std::string reply)
 
 
 void Server::registerClient(int fd) {
-	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty())
+	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty()) {
 		getClient(fd)->setRegistred(true);
+		replies(fd, RPL_CONNECTED(getClient(fd)->getNickname()));
+	}
 }
 
 void Server::clearClient(int fd) {

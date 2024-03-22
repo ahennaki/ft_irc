@@ -27,8 +27,9 @@ void Server::nickCmd(int fd, std::vector<std::string> cmd) {
 			replies(fd, ERR_ERRONEUSNICK(cmd[1]));
 		else if (isNickUsed(cmd[1]))
 			replies(fd, ERR_NICKINUSE(cmd[1]));
-		else
+		else {
 			getClient(fd)->setNickname(cmd[1]);
+			registerClient(fd);
+		}
 	}
-	registerClient(fd);
 }

@@ -49,6 +49,7 @@ class Server {
 
 		void passCmd(int fd, std::vector<std::string> cmd);
 		void nickCmd(int fd, std::vector<std::string> cmd);
+		void userCmd(int fd, std::vector<std::string> cmd);
 		bool isNickUsed(std::string nick);
 
 		void execute(std::string cmd, int fd);
