@@ -1,8 +1,18 @@
-#include "server.hpp"
+#include "../inc/server.hpp"
 
 bool Channel::isAdmin(Client client) {
 	admin_it it = admins.begin();
 	while (it != admins.end()) {
+		if (!((*it).getNickname()).compare(client.getNickname()))
+			return true;
+		it++;
+	}
+	return false;
+}
+
+bool Channel::isUser(Client client) {
+	admin_it it = users.begin();
+	while (it != users.end()) {
 		if (!((*it).getNickname()).compare(client.getNickname()))
 			return true;
 		it++;

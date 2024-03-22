@@ -1,4 +1,5 @@
-#include "server.hpp"
+#include "../inc/server.hpp"
+#include "../inc/utils.hpp"
 
 static int toInt(std::string& input)
 {
@@ -75,7 +76,7 @@ void Server::startServer() {
 			}
 		}
 	}
-	CloseFds();
+	closeFds();
 }
 
 void Server::acceptClient()
@@ -107,23 +108,42 @@ void Server::acceptClient()
 
 void Server::getMessage(int fd)
 {
-	char buff[1024];
-	bzero(buff, sizeof(buff));
+	std::vector<std::string> cmd;
+	char msg[1024];
+	bzero(msg, sizeof(msg));
 
-	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
+	ssize_t bytes = recv(fd, msg, sizeof(msg) - 1 , 0);
 
 	if (bytes <= 0) {
 		std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
-		ClearClients(fd);
+		clearClient(fd);
 		close(fd);
 	}
 	else {
-		buff[bytes] = '\0';
-		std::cout << "Client \"" << fd << "\" send message: " << buff;
+		cmd = splitMessage(msg);
+		str_it it = cmd.begin();
+		while (it != cmd.end()) {
+			execute(*it, fd);
+			it++;
+		}
+		// std::cout << "Client \"" << fd << "\" send message: " << buff;
 	}
 }
 
-void Server::ClearClients(int fd) {
+void Server::execute(std::string cmd, int fd) {
+	std::vector<std::string> str = splitCmd(cmd);
+	if (str[0] == "PASS")
+		passCmd(fd, str);
+}
+
+void Server::replies(int fd, std::string reply)
+{
+	std::cout << "Response:\n" << reply;
+	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
+		std::cerr << "Response send() faild" << std::endl;
+}
+
+void Server::clearClient(int fd) {
 	pfd_it p_it = pfd.begin();
 	while (p_it != pfd.end()) {
 		if ((*p_it).fd == fd) {
@@ -143,7 +163,7 @@ void Server::ClearClients(int fd) {
 	}
 }
 
-void Server::CloseFds(){
+void Server::closeFds(){
 	client_it it = clients.begin();
 	while (it != clients.end()) {
 		std::cout << "Client \"" << (*it).getFd() << "\" Disconnected" << std::endl;

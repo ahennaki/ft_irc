@@ -1,6 +1,5 @@
-#include <iostream>
-#include <vector>
-#include "client.hpp"
+#ifndef CHANNEL_HPP
+#define CHANNEL_HPP
 
 typedef std::vector<Client>::iterator admin_it;
 
@@ -9,6 +8,7 @@ class Channel {
 		std::string name;
 		std::string topic;
 		std::vector<Client> admins;
+		std::vector<Client> users;
 
 	public:
 		Channel() {};
@@ -19,6 +19,10 @@ class Channel {
 		void setName(std::string name) {this->name = name;}
 		void setTopic(std::string topic) {this->topic = topic;}
 
+		bool isUser(Client client);
 		bool isAdmin(Client client);
 		void addAdmin(Client client) {admins.push_back(client);}
+		void addUser(Client user) {users.push_back(user);}
 };
+
+#endif

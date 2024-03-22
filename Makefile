@@ -5,8 +5,8 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 RM = rm -rf
 
-SRCS = main.cpp src/server.cpp
-INC = inc/server.hpp 
+SRCS = main.cpp src/server.cpp src/client.cpp src/pass.cpp src/utils.cpp src/channel.cpp
+INC = inc/server.hpp inc/client.hpp inc/utils.hpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)

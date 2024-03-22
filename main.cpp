@@ -1,5 +1,5 @@
 #include <iostream>
-#include "server.hpp"
+#include "inc/server.hpp"
 
 int main(int ac, char **av)
 {
@@ -15,7 +15,7 @@ int main(int ac, char **av)
 		server.startServer();
 	}
 	catch(const std::exception& e){
-		server.CloseFds();
+		server.closeFds();
 		std::cerr << e.what() << std::endl;
 	}
 	std::cout << "Server closed." << std::endl;

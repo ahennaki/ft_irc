@@ -1,3 +1,6 @@
+#ifndef CLIENT_HPP
+#define CLIENT_HPP
+
 class Client {
 	private:
 		int fd;
@@ -5,11 +8,12 @@ class Client {
 		std::string nickName;
 		std::string userName;
 		std::string realName;
+		bool registred;
 		bool admin;
 		bool auth;
 
 	public:
-		Client() : auth(false) {};
+		Client() : registred(false), admin(false), auth(false) {};
 		
 		std::string getNickname() {return nickName;}
 		std::string getUsername() {return userName;}
@@ -17,6 +21,7 @@ class Client {
 		std::string getIpadd() {return ipAdd;}
 		bool		getAdmin() {return admin;}
 		bool		getAuth() {return auth;}
+		bool		getRegistred() {return registred;}
 		int			getFd() {return fd;}
 
 		void	setFd(int fd) {this->fd = fd;}
@@ -26,4 +31,7 @@ class Client {
 		void	setRealname(std::string realName) {this->realName = realName;}
 		void	setAdmin(bool admin) {this->admin = admin;}
 		void	setAuth(bool auth) {this->auth = auth;}
+		void	setRegistred(bool registred) {this->registred = registred;}
 };
+
+#endif
