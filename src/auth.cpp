@@ -2,17 +2,17 @@
 
 void Server::passCmd(int fd, std::vector<std::string> cmd) {
 	if (cmd.size() < 2)
-		replies(fd, ERR_NOTENOUGHPARAM(std::string("*")));
+		replies(fd, ERR_NEEDMOREPARAMS(std::string("*")));
 	else if (cmd.size() == 2) {
 		if (!cmd[1].compare(password)) {
 			getClient(fd)->setAuth(true);
 			return;
 		}
 		else
-			replies(fd, ERR_INCORPASS(std::string("*")));
+			replies(fd, ERR_PASSWDMISMATCH(std::string("*")));
 	}
 	else
-		replies(fd, ERR_INCORPASS(std::string("*")));
+		replies(fd, ERR_PASSWDMISMATCH(std::string("*")));
 }
 
 bool Server::isNickUsed(std::string nick) {
@@ -36,7 +36,7 @@ bool isNickValid(std::string nick) {
 
 void Server::nickCmd(int fd, std::vector<std::string> cmd) {
 	if (cmd.size() < 2)
-		replies(fd, ERR_NOTENOUGHPARAM(std::string("*")));
+		replies(fd, ERR_NEEDMOREPARAMS(std::string("*")));
 	else if (cmd.size() >= 2) {
 		if (!isNickValid(cmd[1]))
 			replies(fd, ERR_ERRONEUSNICK(cmd[1]));
@@ -54,7 +54,7 @@ void Server::nickCmd(int fd, std::vector<std::string> cmd) {
 
 void Server::userCmd(int fd, std::vector<std::string> cmd) {
 	if (cmd.size() < 5)
-		replies(fd, ERR_NOTENOUGHPARAM(std::string("*")));
+		replies(fd, ERR_NEEDMOREPARAMS(std::string("*")));
 	else {
 		if (!getClient(fd)->getAuth())
 			replies(fd, ERR_NOTREGISTERED(getClient(fd)->getNickname()));

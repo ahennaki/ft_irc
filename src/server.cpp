@@ -21,18 +21,19 @@ static int toInt(std::string& input)
 
 Server::Server(std::string port, std::string password) : port(port), password(password) {}
 
-bool Server::validPort(){
-	if (port.find_first_not_of("0123456789") != std::string::npos) {
-		std::cerr << "invalide port: \"should be integer\"" << std::endl;
-		return false;
-	}
+void Server::validPort() {
+	if (port.find_first_not_of("0123456789") != std::string::npos)
+		throw (std::runtime_error("Invalide port."));
+
 	int prt = toInt(port);
-	if (prt < 0 || prt > 65535) {
-		std::cerr << "invalide port: \"should be between 0 and 65535\"" << std::endl;
-		return false;
-	}
-	return true;
+	if (prt < 0 || prt > 65535)
+		throw (std::runtime_error("Invalide port."));
 }
+
+void Server::validPassword() {
+	if (password.empty() || password.find_first_of(" \r\t\v\n") != std::string::npos)
+		throw (std::runtime_error("Invalide password."));
+} 
 
 Server::~Server() {}
 
@@ -138,6 +139,8 @@ void Server::execute(std::string cmd, int fd) {
 		nickCmd(fd, str);
 	else if (str[0] == "USER")
 		userCmd(fd, str);
+	// else
+	// 	replies(fd, )
 }
 
 void Server::replies(int fd, std::string reply)

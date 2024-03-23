@@ -35,7 +35,8 @@ class Server {
 		Server(std::string port, std::string password);
 		~Server();
 
-		bool validPort();
+		void validPort();
+		void validPassword();
 		void startServer();
 		void acceptClient();
 		void getMessage(int fd);
