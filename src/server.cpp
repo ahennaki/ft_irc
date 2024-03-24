@@ -1,39 +1,7 @@
 #include "../inc/server.hpp"
 #include "../inc/utils.hpp"
 
-static int toInt(std::string& input)
-{
-	try
-	{
-		/* code */
-		int i;
-		std::stringstream str(input);
-
-		str >> i;
-		return i;
-	}
-	catch(std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-	return 0;
-}
-
 Server::Server(std::string port, std::string password) : port(port), password(password) {}
-
-void Server::validPort() {
-	if (port.find_first_not_of("0123456789") != std::string::npos)
-		throw (std::runtime_error("Invalide port."));
-
-	int prt = toInt(port);
-	if (prt < 0 || prt > 65535)
-		throw (std::runtime_error("Invalide port."));
-}
-
-void Server::validPassword() {
-	if (password.empty() || password.find_first_of(" \r\t\v\n") != std::string::npos)
-		throw (std::runtime_error("Invalide password."));
-} 
 
 Server::~Server() {}
 
@@ -117,7 +85,7 @@ void Server::getMessage(int fd)
 
 	if (bytes <= 0) {
 		std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
-		clearClient(fd);
+		rmClient(fd);
 		close(fd);
 	}
 	else {
@@ -127,55 +95,30 @@ void Server::getMessage(int fd)
 			execute(*it, fd);
 			it++;
 		}
-		// std::cout << "Client \"" << fd << "\" send message: " << buff;
 	}
 }
 
 void Server::execute(std::string cmd, int fd) {
-	std::vector<std::string> str = splitCmd(cmd);
-	if (str[0] == "PASS")
-		passCmd(fd, str);
-	else if (str[0] == "NICK")
-		nickCmd(fd, str);
-	else if (str[0] == "USER")
-		userCmd(fd, str);
-	// else
-	// 	replies(fd, )
+	if (cmd.empty())
+		return;
+	std::vector<std::string> args = splitCmd(cmd);
+	if (args[0] == "PASS")
+		passCmd(fd, args);
+	else if (args[0] == "NICK")
+		nickCmd(fd, args);
+	else if (args[0] == "USER")
+		userCmd(fd, args);
+	else if (args[0] == "QUIT")
+		quitCmd(fd);
+	else
+		replies(fd, ERR_CMDNOTFOUND(getClient(fd)->getNickname(), args[0]));
 }
 
 void Server::replies(int fd, std::string reply)
 {
-	std::cout << "Response:\n" << reply;
+	std::cout << reply;
 	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
 		std::cerr << "Response send() faild" << std::endl;
-}
-
-
-void Server::registerClient(int fd) {
-	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty()) {
-		getClient(fd)->setRegistred(true);
-		replies(fd, RPL_CONNECTED(getClient(fd)->getNickname()));
-	}
-}
-
-void Server::clearClient(int fd) {
-	pfd_it p_it = pfd.begin();
-	while (p_it != pfd.end()) {
-		if ((*p_it).fd == fd) {
-			pfd.erase(p_it);
-			break;
-		}
-		p_it++;
-	}
-
-	client_it it = clients.begin();
-	while (it != clients.end()) {
-		if ((*it).getFd() == fd) {
-			clients.erase(it);
-			break;
-		}
-		it++;
-	}
 }
 
 void Server::closeFds(){

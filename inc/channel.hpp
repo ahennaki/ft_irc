@@ -1,8 +1,6 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
-typedef std::vector<Client>::iterator admin_it;
-
 class Channel {
 	private:
 		std::string name;

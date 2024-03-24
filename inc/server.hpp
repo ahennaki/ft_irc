@@ -43,15 +43,20 @@ class Server {
 
 		void addClient(int fd, std::string nickName, std::string userName, std::string realName);
 		Client* getClient(int fd);
-		void clearClient(int fd);
+		void rmClient(int fd);
 		void closeFds();
 
-		void addChannel(std::string name, std::string topic);
+		Channel* getChannel(std::string name);
+		void	addChannel(std::string name);
+		bool	channelExist(std::string name);
 
 		void passCmd(int fd, std::vector<std::string> cmd);
-		void nickCmd(int fd, std::vector<std::string> cmd);
 		void userCmd(int fd, std::vector<std::string> cmd);
+		void nickCmd(int fd, std::vector<std::string> cmd);
 		bool isNickUsed(std::string nick);
+
+		void quitCmd(int fd);
+		void joinCmd(int fd, std::vector<std::string> cmd);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);
