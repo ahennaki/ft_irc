@@ -80,3 +80,9 @@ bool isNickValid(std::string nick) {
 			return false;
 	return true;
 }
+
+bool isCmd(std::string cmd) {
+	return (cmd == "PASS" || cmd == "NICK" || cmd == "USER" || cmd == "QUIT"
+			|| cmd == "JOIN" || cmd == "PART" || cmd == "KICK" || cmd == "TOPIC"
+			|| cmd == "INVITE" || cmd == "MODE" || cmd == "PRIVMSG");
+}

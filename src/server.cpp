@@ -56,12 +56,12 @@ void Server::acceptClient()
 
 	int incofd = accept(serverSocket, (sockaddr *)&(serverAddr), &size);
 	if (incofd == -1) {
-		std::cout << "accept() failed." << std::endl;
+		std::cout << "Error: accept failed." << std::endl;
 		return;
 	}
 
 	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1) {
-		std::cout << "fcntl() failed." << std::endl;
+		std::cout << "Error: fcntl failed." << std::endl;
 		return;
 	}
 
@@ -80,6 +80,7 @@ void Server::getMessage(int fd)
 	std::vector<std::string> cmd;
 	char msg[1024];
 	bzero(msg, sizeof(msg));
+	// std::cout << "RECIVE MSG" << std::endl;
 
 	ssize_t bytes = recv(fd, msg, sizeof(msg) - 1 , 0);
 
@@ -101,7 +102,12 @@ void Server::getMessage(int fd)
 void Server::execute(std::string cmd, int fd) {
 	if (cmd.empty())
 		return;
+
 	std::vector<std::string> args = splitCmd(cmd);
+	Client* cli = getClient(fd);
+	if (!isCmd(args[0])) {
+		replies(fd, ERR_CMDNOTFOUND(cli->getNickname(), args[0])); return;
+	}
 	if (args[0] == "PASS")
 		passCmd(fd, args);
 	else if (args[0] == "NICK")
@@ -110,15 +116,19 @@ void Server::execute(std::string cmd, int fd) {
 		userCmd(fd, args);
 	else if (args[0] == "QUIT")
 		quitCmd(fd);
+	else if (cli->getRegistred()) {
+		if (args[0] == "JOIN")
+			joinCmd(fd, args);
+	}
 	else
-		replies(fd, ERR_CMDNOTFOUND(getClient(fd)->getNickname(), args[0]));
+		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));
 }
 
 void Server::replies(int fd, std::string reply)
 {
 	std::cout << reply;
 	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
-		std::cerr << "Response send() faild" << std::endl;
+		std::cerr << "Error: send faild" << std::endl;
 }
 
 void Server::closeFds(){

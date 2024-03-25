@@ -46,9 +46,11 @@ class Server {
 		void rmClient(int fd);
 		void closeFds();
 
+		void addChannel(int fd, std::string name, std::string key);
+		void addClientToChan(int fd, std::string name);
 		Channel* getChannel(std::string name);
-		void	addChannel(std::string name);
 		bool	channelExist(std::string name);
+		bool	clientExist(int fd, std::string name);
 
 		void passCmd(int fd, std::vector<std::string> cmd);
 		void userCmd(int fd, std::vector<std::string> cmd);
