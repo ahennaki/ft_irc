@@ -1,8 +1,12 @@
 #include "../inc/server.hpp"
 
 bool Channel::isAdmin(Client client) {
-	if (client.getAdmin())
-		return true;
+	client_it it = admins.begin();
+	while (it != admins.end()) {
+		if ((*it).getFd() == client.getFd())
+			return true;
+		it++;
+	}
 	return false;
 }
 
@@ -30,13 +34,13 @@ void Server::addChannel(int fd, std::string name, std::string key) {
 	Client* cli = getClient(fd);
 	if (channelExist(name)) {
 		Channel* chan = getChannel(name);
-		if (chan->isUser(*cli)) {
+		if (chan->isUser(*cli) || chan->isAdmin(*cli)) {
 			replies(fd, ERR_USERONCHANNEL(cli->getNickname(), name)); return;
 		}
 		else {
 			addClientToChan(fd, name);
-			replies(fd, RPL_JOINMSG(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-			replies(fd, RPL_NAMREPLY(cli->getNickname(), name, chan->getClientList()));
+			replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+			replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, chan->getClientList()));
 			replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
 			return;
 		}
@@ -44,11 +48,10 @@ void Server::addChannel(int fd, std::string name, std::string key) {
 	Channel chan;
 	chan.setName(name);
 	chan.setKey(key);
-	cli->setAdmin(true);
-	chan.addUser(*cli);
+	chan.addAdmin(*cli);
 	channels.push_back(chan);
-	replies(fd, RPL_JOINMSG(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-	replies(fd, RPL_NAMREPLY(cli->getNickname(), name, ("@" + cli->getNickname())));
+	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ("@" + cli->getNickname())));
 	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
 }
 
@@ -57,15 +60,18 @@ void Server::addClientToChan(int fd, std::string name) {
 }
 
 std::string Channel::getClientList() {
-	client_it it = users.begin();
+	client_it it = admins.begin();
 	std::string clist;
-	while (it != users.end()) {
-		if ((*it).getAdmin())
-			clist += ("@" + (*it).getNickname());
-		else
-			clist += (*it).getNickname();
+	while (it != admins.end()) {
+		clist += ("@" + (*it).getNickname());
 		clist += " ";
 		it++;
+	}
+	client_it itu = users.begin();
+	while (itu != users.end()) {
+		clist += (*itu).getNickname();
+		clist += " ";
+		itu++;
 	}
 	return clist;
 }
@@ -84,4 +90,22 @@ bool Server::clientExist(int fd, std::string name) {
 	if (getChannel(name)->isUser(*getClient(fd)))
 		return true;
 	return false;
+}
+
+void Channel::rmUser(Client client) {
+	client_it it = admins.begin();
+	while (it != admins.end()) {
+		if ((*it).getFd() == client.getFd()) {
+			admins.erase(it); return;
+		}
+		it++;
+	}
+
+	client_it itu = users.begin();
+	while (itu != users.end()) {
+		if ((*itu).getFd() == client.getFd()) {
+			users.erase(itu); return;
+		}
+		itu++;
+	}
 }

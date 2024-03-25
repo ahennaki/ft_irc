@@ -59,6 +59,7 @@ class Server {
 
 		void quitCmd(int fd);
 		void joinCmd(int fd, std::vector<std::string> cmd);
+		void partCmd(int fd, std::vector<std::string> cmd);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);

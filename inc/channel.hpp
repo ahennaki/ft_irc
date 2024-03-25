@@ -6,6 +6,7 @@ class Channel {
 		std::string name;
 		std::string key;
 		std::string topic;
+		std::vector<Client> admins;
 		std::vector<Client> users;
 
 	public:
@@ -22,6 +23,8 @@ class Channel {
 		bool isUser(Client client);
 		bool isAdmin(Client client);
 		void addUser(Client user) {users.push_back(user);}
+		void addAdmin(Client admin) {admins.push_back(admin);}
+		void rmUser(Client client);
 		std::string getClientList();
 };
 

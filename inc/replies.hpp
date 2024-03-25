@@ -12,9 +12,9 @@
 #define ERR_NOSUCHCHANNEL(nick, chan) (": 403 " + nick + " " + chan + " :No such channel\r\n")
 #define ERR_USERONCHANNEL(nick, chan) (": 443 " + nick + " " + chan + " :is already on channel\r\n")
 
-#define RPL_CONNECTED(nice) (": 001 " + nick + " : Welcome to the IRC server\r\n")
-#define RPL_JOINMSG(nick, user, ipaddress, chan) (":" + nick + "!" + user + "@" + ipaddress + " JOIN " + chan + "\r\n")
-#define RPL_NAMREPLY(nick, chan, clientslist) (": 353 " + nick + " @ " + chan + " :" + clientslist + "\r\n")
+#define RPL_CONNECTED(nick) (": 001 " + nick + " : Welcome to the IRC server\r\n")
+#define RPL_JOINCHANNEL(nick, user, ipaddress, chan) (":" + nick + "!" + user + "@" + ipaddress + " JOIN " + chan + "\r\n")
+#define RPL_CLIENTLIST(nick, chan, clientslist) (": 353 " + nick + " = " + chan + " :" + clientslist + "\r\n")
 #define RPL_ENDOFNAMES(nick, chan) (": 366 " + nick + " " + chan + " :END of /NAMES list\r\n")
 #define RPL_TOPICIS(nick, chan, topic) (": 332 " + nick + " " +chan + " :" + topic + "\r\n")
 
