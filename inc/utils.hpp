@@ -3,8 +3,9 @@
 
 #include "server.hpp"
 
+std::vector<std::string> ft_split(std::string cmd, char delimiter);
 std::vector<std::string> splitMessage(std::string str);
-std::vector<std::string> splitCmd(std::string& cmd);
+std::vector<std::string> splitCmd(std::string cmd);
 
 bool isNickValid(std::string nick);
 bool isCmd(std::string cmd);

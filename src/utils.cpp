@@ -32,7 +32,7 @@ void Server::validPassword() {
 		throw (std::runtime_error("Invalide password."));
 } 
 
-std::vector<std::string> splitCmd(std::string& cmd)
+std::vector<std::string> splitCmd(std::string cmd)
 {
 	std::vector<std::string> vec;
 	std::istringstream ss(cmd);
@@ -85,4 +85,43 @@ bool isCmd(std::string cmd) {
 	return (cmd == "PASS" || cmd == "NICK" || cmd == "USER" || cmd == "QUIT"
 			|| cmd == "JOIN" || cmd == "PART" || cmd == "KICK" || cmd == "TOPIC"
 			|| cmd == "INVITE" || cmd == "MODE" || cmd == "PRIVMSG");
+}
+
+std::vector<std::string> ft_split(std::string cmd, char delimiter) {
+	std::vector<std::string> tokens;
+	std::string str;
+	size_t pos = 0;
+
+	while (pos < cmd.size()) {
+		if (cmd[pos] != delimiter)
+			str += cmd[pos];
+		else {
+			tokens.push_back(str);
+			str.clear();
+		}
+		++pos;
+	}
+	if (!str.empty())
+		tokens.push_back(str);
+	return tokens;
+}
+
+void Server::closeFds(){
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		std::cout << "Client \"" << (*it).getFd() << "\" Disconnected" << std::endl;
+		close((*it).getFd());
+		it++;
+	}
+	if (serverSocket != -1) {
+		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
+		close(serverSocket);
+	}
+}
+
+void Server::replies(int fd, std::string reply)
+{
+	std::cout << reply;
+	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
+		std::cerr << "Error: send faild" << std::endl;
 }

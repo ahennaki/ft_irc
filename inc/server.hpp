@@ -30,10 +30,13 @@ class Server {
 		std::vector<struct pollfd> pfd;
 		std::vector<Client> clients;
 		std::vector<Channel> channels;
+		static bool signal;
 		
 	public:
 		Server(std::string port, std::string password);
 		~Server();
+
+		static void signalHandler(int signum);
 
 		void validPort();
 		void validPassword();
@@ -52,14 +55,17 @@ class Server {
 		bool	channelExist(std::string name);
 		bool	clientExist(int fd, std::string name);
 
+		void rmClientFromChans(int fd);
+
 		void passCmd(int fd, std::vector<std::string> cmd);
 		void userCmd(int fd, std::vector<std::string> cmd);
 		void nickCmd(int fd, std::vector<std::string> cmd);
 		bool isNickUsed(std::string nick);
 
-		void quitCmd(int fd);
 		void joinCmd(int fd, std::vector<std::string> cmd);
 		void partCmd(int fd, std::vector<std::string> cmd);
+		void modeCmd(int fd, std::vector<std::string> cmd);
+		void quitCmd(int fd);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);

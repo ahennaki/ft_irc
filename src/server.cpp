@@ -1,6 +1,7 @@
 #include "../inc/server.hpp"
 #include "../inc/utils.hpp"
 
+bool Server::signal = false;
 Server::Server(std::string port, std::string password) : port(port), password(password) {}
 
 Server::~Server() {}
@@ -33,7 +34,7 @@ void Server::startServer() {
 	pollfd polFd = {serverSocket, POLLIN, 0};
     pfd.push_back(polFd);
 
-	while (true) {
+	while (!signal) {
 		if (poll(&pfd[0], pfd.size(), -1) == -1)
 			throw (std::runtime_error("Error: poll faild."));
 		for (size_t i = 0; i < pfd.size(); i++) {
@@ -86,6 +87,7 @@ void Server::getMessage(int fd)
 
 	if (bytes <= 0) {
 		std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
+		rmClientFromChans(fd);
 		rmClient(fd);
 		close(fd);
 	}
@@ -119,26 +121,15 @@ void Server::execute(std::string cmd, int fd) {
 	else if (cli->getRegistred()) {
 		if (args[0] == "JOIN")
 			joinCmd(fd, args);
+		else if (args[0] == "PART")
+			partCmd(fd, args);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));
 }
 
-void Server::replies(int fd, std::string reply)
+void Server::signalHandler(int signum)
 {
-	std::cout << reply;
-	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
-		std::cerr << "Error: send faild" << std::endl;
-}
-
-void Server::closeFds(){
-	client_it it = clients.begin();
-	while (it != clients.end()) {
-		std::cout << "Client \"" << (*it).getFd() << "\" Disconnected" << std::endl;
-		close((*it).getFd());
-	}
-	if (serverSocket != -1) {
-		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
-		close(serverSocket);
-	}
+	(void)signum;
+	Server::signal = true;
 }

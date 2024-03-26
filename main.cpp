@@ -10,6 +10,8 @@ int main(int ac, char **av)
 	}
 	Server server(av[1], av[2]);
 	try{
+		signal(SIGINT, server.signalHandler);
+		signal(SIGQUIT, server.signalHandler);
 		server.validPort();
 		server.validPassword();
 		server.startServer();
