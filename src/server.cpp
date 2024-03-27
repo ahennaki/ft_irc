@@ -127,9 +127,3 @@ void Server::execute(std::string cmd, int fd) {
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));
 }
-
-void Server::signalHandler(int signum)
-{
-	(void)signum;
-	Server::signal = true;
-}

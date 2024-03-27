@@ -30,6 +30,16 @@ Client* Server::getClient(int fd) {
 	return NULL;
 }
 
+Client* Server::getClient(std::string nick) {
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		if ((*it).getNickname() == nick)
+			return (&(*it));
+		it++;
+	}
+	return NULL;
+}
+
 void Server::registerClient(int fd) {
 	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty()) {
 		getClient(fd)->setRegistred(true);

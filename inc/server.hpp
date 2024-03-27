@@ -36,7 +36,7 @@ class Server {
 		Server(std::string port, std::string password);
 		~Server();
 
-		static void signalHandler(int signum);
+		static void signalHandler(int sig) {(void)sig; signal = true;}
 
 		void validPort();
 		void validPassword();
@@ -46,6 +46,7 @@ class Server {
 
 		void addClient(int fd, std::string nickName, std::string userName, std::string realName);
 		Client* getClient(int fd);
+		Client* getClient(std::string nick);
 		void rmClient(int fd);
 		void closeFds();
 
@@ -64,8 +65,13 @@ class Server {
 
 		void joinCmd(int fd, std::vector<std::string> cmd);
 		void partCmd(int fd, std::vector<std::string> cmd);
-		void modeCmd(int fd, std::vector<std::string> cmd);
 		void quitCmd(int fd);
+
+		void modeCmd(int fd, std::vector<std::string> cmd);
+		void modeExec(int fd, std::vector<std::string> cmd);
+		void inviteOnly(char opr, std::string chan);
+		void topicMode(char opr, std::string chan);
+		void operatorMode(int fd, char opr, std::string chan, std::string nick);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);
