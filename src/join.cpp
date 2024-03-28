@@ -9,11 +9,7 @@ void Server::addChannel(int fd, std::string name, std::string key) {
 			replies(fd, ERR_USERONCHANNEL(cli->getNickname(), name)); return;
 		}
 		else {
-			addClientToChan(fd, name);
-			replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-			replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, chan->getClientList()));
-			replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
-			return;
+			addClientToChan(fd, name); return;
 		}
 	}
 	Channel ch = createChannel(fd, name, key);

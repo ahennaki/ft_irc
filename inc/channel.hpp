@@ -10,7 +10,7 @@ class Channel {
 		std::vector<Client> users;
 
 	public:
-		int limit;
+		size_t limit;
 		bool i;
 		bool t;
 		bool k;
@@ -33,6 +33,7 @@ class Channel {
 		void addAdmin(Client admin) {admins.push_back(admin);}
 		void rmUser(Client client);
 		std::string getClientList();
+		size_t userNbr();
 };
 
 #endif

@@ -10,6 +10,7 @@ Channel Server::createChannel(int fd, std::string name, std::string key) {
 	channel.setName(name);
 	channel.setKey(key);
 	channel.addAdmin(*getClient(fd));
+	return channel;
 }
 
 bool Channel::isAdmin(Client client) {
@@ -46,9 +47,15 @@ void Server::addClientToChan(int fd, std::string name) {
 	Channel* ch = getChannel(name);
 	Client* cli = getClient(fd);
 	if (ch->i && !cli->getInvited()) {
-		replies(fd, ERR_CANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
+		replies(fd, ERR_MICANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
+	}
+	if (ch->l && ch->limit <= ch->userNbr()) {
+		replies(fd, ERR_MLCANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
 	}
 	ch->addUser(*cli);
+	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ch->getClientList()));
+	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
 }
 
 std::string Channel::getClientList() {
@@ -66,6 +73,21 @@ std::string Channel::getClientList() {
 		itu++;
 	}
 	return clist;
+}
+
+size_t Channel::userNbr() {
+	client_it it = admins.begin();
+	size_t nb = 0;
+	while (it != admins.end()) {
+		nb++;
+		it++;
+	}
+	client_it itu = users.begin();
+	while (itu != users.end()) {
+		nb++;
+		itu++;
+	}
+	return nb;
 }
 
 bool Server::channelExist(std::string name) {
