@@ -7,11 +7,21 @@ void Server::inviteOnly(char opr, std::string chan) {
 		if (ch->i)
 			return;
 		ch->i = true;
+		client_it it = clients.begin();
+		while (it != clients.end()) {
+			(*it).setInvited(false);
+			it++;
+		}
 	}
 	else if (opr == '-') {
 		if (!ch->i)
 			return;
 		ch->i = false;
+		client_it it = clients.begin();
+		while (it != clients.end()) {
+			(*it).setInvited(true);
+			it++;
+		}
 	}
 }
 
@@ -32,6 +42,9 @@ void Server::topicMode(char opr, std::string chan) {
 void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) {
 	Client* cli = getClient(nick);
 	Channel* ch = getChannel(chan);
+	if (nick.empty()) {
+		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
+	}
 	if (!ch->isAdmin((*cli)) && !ch->isUser(*cli)) {
 		replies(fd, ERR_TARGETNOTONCHANNEL(cli->getNickname(), ch->getName())); return;
 	}
@@ -57,20 +70,21 @@ void Server::modeExec(int fd, std::vector<std::string> cmd) {
 		args[i - 3] = cmd[i];
 
 	size_t j = 0;
-	char opr = '/0';
+	char opr = '\0';
 	for (size_t i = 0; i < opt.size(); i++) {
 		if (opt[i] == '+' || opt[i] == '-')
 			opr = opt[i];
 		else {
 			if (opt[i] == 'i')
 				inviteOnly(opr, cmd[1]);
-			else if (opt[i] = 't')
+			else if (opt[i] == 't')
 				topicMode(opr, cmd[1]);
 			else if (opt[i] == 'o')
 				operatorMode(fd, opr, cmd[1], args[j++]);
+			else
+				replies(fd, ERR_NOTRECOGNISEDOPT(getClient(fd)->getNickname(), cmd[1], opt[i]));
 		}
 	}
-	
 }
 
 void Server::modeCmd(int fd, std::vector<std::string> cmd) {

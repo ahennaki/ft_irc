@@ -10,13 +10,14 @@ class Channel {
 		std::vector<Client> users;
 
 	public:
-		int limit = 0;
-		bool i = false;
-		bool t = false;
-		bool k = false;
-		bool l = false;
+		int limit;
+		bool i;
+		bool t;
+		bool k;
+		bool l;
 
 		Channel() {};
+		// ~Channel() {};
 
 		std::string getName() {return name;}
 		std::string getKey() {return key;}

@@ -1,5 +1,17 @@
 #include "../inc/server.hpp"
 
+Channel Server::createChannel(int fd, std::string name, std::string key) {
+	Channel channel;
+	channel.i = false;
+	channel.t = false;
+	channel.k = false;
+	channel.l = false;
+	channel.limit = 0;
+	channel.setName(name);
+	channel.setKey(key);
+	channel.addAdmin(*getClient(fd));
+}
+
 bool Channel::isAdmin(Client client) {
 	client_it it = admins.begin();
 	while (it != admins.end()) {
@@ -30,33 +42,13 @@ Channel* Server::getChannel(std::string name) {
 	return NULL;
 }
 
-void Server::addChannel(int fd, std::string name, std::string key) {
-	Client* cli = getClient(fd);
-	if (channelExist(name)) {
-		Channel* chan = getChannel(name);
-		if (chan->isUser(*cli) || chan->isAdmin(*cli)) {
-			replies(fd, ERR_USERONCHANNEL(cli->getNickname(), name)); return;
-		}
-		else {
-			addClientToChan(fd, name);
-			replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-			replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, chan->getClientList()));
-			replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
-			return;
-		}
-	}
-	Channel chan;
-	chan.setName(name);
-	chan.setKey(key);
-	chan.addAdmin(*cli);
-	channels.push_back(chan);
-	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ("@" + cli->getNickname())));
-	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
-}
-
 void Server::addClientToChan(int fd, std::string name) {
-	getChannel(name)->addUser(*getClient(fd));
+	Channel* ch = getChannel(name);
+	Client* cli = getClient(fd);
+	if (ch->i && !cli->getInvited()) {
+		replies(fd, ERR_CANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
+	}
+	ch->addUser(*cli);
 }
 
 std::string Channel::getClientList() {

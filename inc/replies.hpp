@@ -14,7 +14,8 @@
 #define ERR_NOTRECOGNISEDOPT(nick, chan, arg) (": 472 " + nick + " " + chan + " " + arg + " :Is not a recognised channel mode\r\n")
 #define ERR_NOTOPERATOR(chan) (": 482 " + chan + " :You're not a channel operator\r\n")
 #define ERR_CLINOTONCHANNEL(nick, chan) (": 442 " + nick + " " + chan + " :You're not on the channel\r\n")
-#define ERR_TARGETNOTONCHANNEL(nick, chan) (": 442 " + nick + " " + chan + " :Is not on the channel\r\n")
+#define ERR_TARGETNOTONCHANNEL(nick, chan) (": 441 " + nick + " " + chan + " :Is not on the channel\r\n")
+#define ERR_CANTJOINCHANNEL(nick, chan) (": 473 " + nick + " " + chan + " :Cannot join channel (+i)\r\n")
 
 #define RPL_CONNECTED(nick) (": 001 " + nick + " : Welcome to the IRC server\r\n")
 #define RPL_JOINCHANNEL(nick, user, ipaddress, chan) (":" + nick + "!" + user + "@" + ipaddress + " JOIN " + chan + "\r\n")

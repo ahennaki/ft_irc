@@ -123,6 +123,8 @@ void Server::execute(std::string cmd, int fd) {
 			joinCmd(fd, args);
 		else if (args[0] == "PART")
 			partCmd(fd, args);
+		else if (args[0] == "MODE")
+			modeCmd(fd, args);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));

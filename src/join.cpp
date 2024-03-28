@@ -1,6 +1,27 @@
 #include "../inc/server.hpp"
 #include "../inc/utils.hpp"
 
+void Server::addChannel(int fd, std::string name, std::string key) {
+	Client* cli = getClient(fd);
+	if (channelExist(name)) {
+		Channel* chan = getChannel(name);
+		if (chan->isUser(*cli) || chan->isAdmin(*cli)) {
+			replies(fd, ERR_USERONCHANNEL(cli->getNickname(), name)); return;
+		}
+		else {
+			addClientToChan(fd, name);
+			replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+			replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, chan->getClientList()));
+			replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
+			return;
+		}
+	}
+	Channel ch = createChannel(fd, name, key);
+	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ("@" + cli->getNickname())));
+	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
+}
+
 void Server::joinCmd(int fd, std::vector<std::string> cmd) {
 	Client* cli = getClient(fd);
 

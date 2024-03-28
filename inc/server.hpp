@@ -52,6 +52,7 @@ class Server {
 
 		void addChannel(int fd, std::string name, std::string key);
 		void addClientToChan(int fd, std::string name);
+		Channel createChannel(int fd, std::string name, std::string key);
 		Channel* getChannel(std::string name);
 		bool	channelExist(std::string name);
 		bool	clientExist(int fd, std::string name);
