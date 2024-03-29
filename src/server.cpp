@@ -55,25 +55,25 @@ void Server::acceptClient()
 	struct sockaddr_in serverAddr;
 	socklen_t size = sizeof(serverAddr);
 
-	int incofd = accept(serverSocket, (sockaddr *)&(serverAddr), &size);
-	if (incofd == -1) {
+	int fd = accept(serverSocket, (sockaddr *)&(serverAddr), &size);
+	if (fd == -1) {
 		std::cout << "Error: accept failed." << std::endl;
 		return;
 	}
 
-	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1) {
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1) {
 		std::cout << "Error: fcntl failed." << std::endl;
 		return;
 	}
 
-	pollfd polFd = {incofd, POLLIN, 0};
+	pollfd polFd = {fd, POLLIN, 0};
 
-	cli.setFd(incofd);
+	cli.setFd(fd);
 	cli.setIpAdd(inet_ntoa((serverAddr.sin_addr)));
 	clients.push_back(cli);
 	pfd.push_back(polFd);
 
-	std::cout << "Client \"" << incofd << "\" Connected successfully." << std::endl;
+	std::cout << "Client \"" << fd << "\" Connected successfully." << std::endl;
 }
 
 void Server::getMessage(int fd)
@@ -108,7 +108,7 @@ void Server::execute(std::string cmd, int fd) {
 	std::vector<std::string> args = splitCmd(cmd);
 	Client* cli = getClient(fd);
 	if (!isCmd(args[0])) {
-		replies(fd, ERR_CMDNOTFOUND(cli->getNickname(), args[0])); return;
+		replies(fd, ERR_UNKNOWNCOMMAND(cli->getNickname(), args[0])); return;
 	}
 	if (args[0] == "PASS")
 		passCmd(fd, args);
@@ -125,6 +125,8 @@ void Server::execute(std::string cmd, int fd) {
 			partCmd(fd, args);
 		else if (args[0] == "MODE")
 			modeCmd(fd, args);
+		else if (args[0] == "INVITE")
+			inviteCmd(fd, args);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));

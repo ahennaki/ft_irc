@@ -9,6 +9,7 @@ std::vector<std::string> splitCmd(std::string cmd);
 
 bool isNickValid(std::string nick);
 bool isCmd(std::string cmd);
+bool isMode(char m);
 
 int toInt(std::string& input);
 

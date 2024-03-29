@@ -51,7 +51,7 @@ class Server {
 		void closeFds();
 
 		void addChannel(int fd, std::string name, std::string key);
-		void addClientToChan(int fd, std::string name);
+		void addClientToChan(int fd, std::string name, std::string key);
 		Channel createChannel(int fd, std::string name, std::string key);
 		Channel* getChannel(std::string name);
 		bool	channelExist(std::string name);
@@ -64,6 +64,7 @@ class Server {
 		void nickCmd(int fd, std::vector<std::string> cmd);
 		bool isNickUsed(std::string nick);
 
+		void inviteCmd(int fd, std::vector<std::string> cmd);
 		void joinCmd(int fd, std::vector<std::string> cmd);
 		void partCmd(int fd, std::vector<std::string> cmd);
 		void quitCmd(int fd);
@@ -73,6 +74,8 @@ class Server {
 		void inviteOnly(char opr, std::string chan);
 		void topicMode(char opr, std::string chan);
 		void operatorMode(int fd, char opr, std::string chan, std::string nick);
+		void limitMode(int fd, char opr, std::string chan, std::string limit);
+		void keyMode(int fd, char opr, std::string chan, std::string key);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);

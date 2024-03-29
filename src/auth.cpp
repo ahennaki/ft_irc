@@ -20,7 +20,7 @@ void Server::passCmd(int fd, std::vector<std::string> cmd) {
 void Server::nickCmd(int fd, std::vector<std::string> cmd) {
 	Client *cli = getClient(fd);
 	if (cmd.size() < 2)
-		replies(fd, ERR_NONICKNAME(cli->getNickname()));
+		replies(fd, ERR_NONICKNAMEGIVEN(cli->getNickname()));
 	else {
 		if (!isNickValid(cmd[1])) {
 			replies(fd, ERR_ERRONEUSNICK(cmd[1])); return;

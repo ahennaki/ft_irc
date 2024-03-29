@@ -125,3 +125,5 @@ void Server::replies(int fd, std::string reply)
 	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
 		std::cerr << "Error: send faild" << std::endl;
 }
+
+bool isMode(char m) {return m == 'i' || m == 't' || m == 'o' || m == 'l' || m == 'k' ;}

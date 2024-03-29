@@ -7,21 +7,11 @@ void Server::inviteOnly(char opr, std::string chan) {
 		if (ch->i)
 			return;
 		ch->i = true;
-		client_it it = clients.begin();
-		while (it != clients.end()) {
-			(*it).setInvited(false);
-			it++;
-		}
 	}
 	else if (opr == '-') {
 		if (!ch->i)
 			return;
 		ch->i = false;
-		client_it it = clients.begin();
-		while (it != clients.end()) {
-			(*it).setInvited(true);
-			it++;
-		}
 	}
 }
 
@@ -46,7 +36,7 @@ void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) 
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
 	}
 	if (!ch->isAdmin((*cli)) && !ch->isUser(*cli)) {
-		replies(fd, ERR_TARGETNOTONCHANNEL(cli->getNickname(), ch->getName())); return;
+		replies(fd, ERR_USERNOTINCHANNEL(cli->getNickname(), ch->getName())); return;
 	}
 	if (opr == '+') {
 		if (ch->isAdmin(*cli))
@@ -62,6 +52,37 @@ void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) 
 	}
 }
 
+void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
+	Channel* ch = getChannel(chan);
+	if (opr == '+' && limit.empty()) {
+		replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
+	}
+
+	size_t lim = toInt(limit);
+	if (opr == '+' && lim < 1) {
+		replies(fd, ERR_UNKNOWNCOMMAND(getClient(fd)->getNickname(), "MODE +l" + limit)); return;
+	}
+	if (opr == '+') {
+		ch->l = true;
+		ch->limit = lim;
+		return;
+	}
+	ch->l = false;
+}
+
+void Server::keyMode(int fd, char opr, std::string chan, std::string key) {
+	Channel* ch = getChannel(chan);
+	if (opr == '+') {
+		if (key.empty()) {
+			replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
+		}
+		ch->k = true;
+		ch->setKey(key);
+		return;
+	}
+	ch->k = false;
+}
+
 void Server::modeExec(int fd, std::vector<std::string> cmd) {
 	std::string opt = cmd[2];
 
@@ -69,21 +90,24 @@ void Server::modeExec(int fd, std::vector<std::string> cmd) {
 	for (size_t i = 3; i < cmd.size(); i++)
 		args[i - 3] = cmd[i];
 
-	size_t j = 0;
-	char opr = '\0';
-	for (size_t i = 0; i < opt.size(); i++) {
-		if (opt[i] == '+' || opt[i] == '-')
-			opr = opt[i];
-		else {
-			if (opt[i] == 'i')
-				inviteOnly(opr, cmd[1]);
-			else if (opt[i] == 't')
-				topicMode(opr, cmd[1]);
-			else if (opt[i] == 'o')
-				operatorMode(fd, opr, cmd[1], args[j++]);
-			else
-				replies(fd, ERR_NOTRECOGNISEDOPT(getClient(fd)->getNickname(), cmd[1], opt[i]));
+	for (size_t i = 1; i < opt.size(); i++) {
+		if ((opt[0] != '-' && opt[0] != '+') || !isMode(opt[i])) {
+			replies(fd, ERR_UNKNOWNMODE(getClient(fd)->getNickname(), opt)); return;
 		}
+	}
+	
+	size_t j = 0;
+	for (size_t i = 1; i < opt.size(); i++) {
+		if (opt[i] == 'i')
+			inviteOnly(opt[0], cmd[1]);
+		else if (opt[i] == 't')
+			topicMode(opt[0], cmd[1]);
+		else if (opt[i] == 'o')
+			operatorMode(fd, opt[0], cmd[1], args[j++]);
+		else if (opt[i] == 'l')
+			limitMode(fd, opt[0], cmd[1], args[j++]);
+		else if (opt[i] == 'k')
+			keyMode(fd, opt[0], cmd[1], args[j++]);
 	}
 }
 
@@ -98,16 +122,10 @@ void Server::modeCmd(int fd, std::vector<std::string> cmd) {
 
 	Channel* chan = getChannel(cmd[1]);
 	if (!chan->isUser(*cli) && !chan->isAdmin(*cli)) {
-		replies(fd, ERR_CLINOTONCHANNEL(cli->getNickname(), chan->getName())); return;
+		replies(fd, ERR_USERNOTINCHANNEL(cli->getNickname(), chan->getName())); return;
 	}
 	if (chan->isUser(*cli)) {
-		replies(fd, ERR_NOTOPERATOR(chan->getName())); return;
-	}
-	if (cmd[2].size() == 1) {
-		if (cmd[2].find_first_not_of("+-iotkl") == std::string::npos) {
-			replies(fd, ERR_NOTRECOGNISEDOPT(cli->getNickname(), cmd[1], cmd[2])); return;
-		}
-		return;
+		replies(fd, ERR_CHANOPRIVSNEEDED(chan->getName())); return;
 	}
 	modeExec(fd, cmd);
 }

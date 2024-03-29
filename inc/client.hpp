@@ -11,10 +11,9 @@ class Client {
 		bool registred;
 		bool admin;
 		bool auth;
-		bool invited;
 
 	public:
-		Client() : registred(false), admin(false), auth(false), invited(true) {};
+		Client() : registred(false), admin(false), auth(false) {};
 		
 		std::string getNickname() {return nickName;}
 		std::string getUsername() {return userName;}
@@ -23,7 +22,6 @@ class Client {
 		bool		getAdmin() {return admin;}
 		bool		getAuth() {return auth;}
 		bool		getRegistred() {return registred;}
-		bool		getInvited() {return invited;}
 		int			getFd() {return fd;}
 
 		void	setFd(int fd) {this->fd = fd;}
@@ -34,7 +32,7 @@ class Client {
 		void	setAdmin(bool admin) {this->admin = admin;}
 		void	setAuth(bool auth) {this->auth = auth;}
 		void	setRegistred(bool registred) {this->registred = registred;}
-		void	setInvited(bool invited) {this->invited = invited;}
+
 };
 
 #endif

@@ -33,6 +33,16 @@ bool Channel::isUser(Client client) {
 	return false;
 }
 
+bool Channel::isInvited(Client client) {
+	client_it it = invited.begin();
+	while (it != invited.end()) {
+		if (!((*it).getNickname()).compare(client.getNickname()))
+			return true;
+		it++;
+	}
+	return false;
+}
+
 Channel* Server::getChannel(std::string name) {
 	channel_it it = channels.begin();
 	while (it != channels.end()) {
@@ -43,14 +53,17 @@ Channel* Server::getChannel(std::string name) {
 	return NULL;
 }
 
-void Server::addClientToChan(int fd, std::string name) {
+void Server::addClientToChan(int fd, std::string name, std::string key) {
 	Channel* ch = getChannel(name);
 	Client* cli = getClient(fd);
-	if (ch->i && !cli->getInvited()) {
-		replies(fd, ERR_MICANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
+	if (ch->i && !ch->isInvited(*cli)) {
+		replies(fd, ERR_INVITEONLYCHAN(cli->getNickname(), ch->getName())); return;
 	}
 	if (ch->l && ch->limit <= ch->userNbr()) {
-		replies(fd, ERR_MLCANTJOINCHANNEL(cli->getNickname(), ch->getName())); return;
+		replies(fd, ERR_CHANNELISFULL(cli->getNickname(), ch->getName())); return;
+	}
+	if (ch->k && ch->getKey().compare(key)) {
+		replies(fd, ERR_BADCHANNELKEY(cli->getNickname(), name)); return;
 	}
 	ch->addUser(*cli);
 	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
