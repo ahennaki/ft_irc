@@ -1,11 +1,13 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
+#include "topic.hpp"
+
 class Channel {
 	private:
 		std::string name;
 		std::string key;
-		std::string topic;
+		Topic topic;
 		std::vector<Client> admins;
 		std::vector<Client> users;
 		std::vector<Client> invited;
@@ -22,11 +24,10 @@ class Channel {
 
 		std::string getName() {return name;}
 		std::string getKey() {return key;}
-		std::string getTopic() {return topic;}
+		Topic* getTopic() {return &topic;}
 
 		void setName(std::string name) {this->name = name;}
 		void setKey(std::string key) {this->key = key;}
-		void setTopic(std::string topic) {this->topic = topic;}
 
 		bool isUser(Client client);
 		bool isAdmin(Client client);
@@ -35,6 +36,7 @@ class Channel {
 		void addInvited(Client cli) {invited.push_back(cli);}
 		void addAdmin(Client admin) {admins.push_back(admin);}
 		void rmUser(Client client);
+		void changeAdmin();
 		std::string getClientList();
 		size_t userNbr();
 };

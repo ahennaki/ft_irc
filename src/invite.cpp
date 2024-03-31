@@ -8,7 +8,10 @@ void Server::inviteCmd(int fd, std::vector<std::string> cmd) {
 
 	Client* target = getClient(cmd[1]);
 	Channel* ch = getChannel(cmd[2]);
-	if (!target || !ch) {
+	if (!target) {
+		replies(fd, ERR_NOSUCHNICK(cmd[1], cmd[2])); return;
+	}
+	if (!ch) {
 		replies(fd, ERR_NOSUCHCHANNEL(cmd[1], cmd[2])); return;
 	}
 	if (!ch->isUser(*cli) && !ch->isAdmin(*cli)) {

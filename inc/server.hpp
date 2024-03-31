@@ -67,6 +67,8 @@ class Server {
 		void inviteCmd(int fd, std::vector<std::string> cmd);
 		void joinCmd(int fd, std::vector<std::string> cmd);
 		void partCmd(int fd, std::vector<std::string> cmd);
+		void kickCmd(int fd, std::vector<std::string> cmd);
+		void topicCmd(int fd, std::string cmd);
 		void quitCmd(int fd);
 
 		void modeCmd(int fd, std::vector<std::string> cmd);
@@ -81,6 +83,7 @@ class Server {
 		void registerClient(int fd);
 		
 		void replies(int fd, const std::string reply);
+		void sendReplieToClient(int fd, std::string reply);
 };
 
 #endif

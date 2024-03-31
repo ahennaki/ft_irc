@@ -65,15 +65,26 @@ void Server::addClientToChan(int fd, std::string name, std::string key) {
 	if (ch->k && ch->getKey().compare(key)) {
 		replies(fd, ERR_BADCHANNELKEY(cli->getNickname(), name)); return;
 	}
-	ch->addUser(*cli);
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		if (ch->isAdmin(*it) || ch->isUser(*it))
+			sendReplieToClient((*it).getFd(), RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+		it++;
+	}
+	if (!ch->userNbr())
+		ch->addAdmin(*cli);
+	else
+		ch->addUser(*cli);
+	if (!(ch->getTopic()->getName()).empty())
+		replies(fd, RPL_TOPIC(cli->getNickname(), ch->getName(), ch->getTopic()->getName()));
 	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
 	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ch->getClientList()));
 	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
 }
 
 std::string Channel::getClientList() {
-	client_it it = admins.begin();
 	std::string clist;
+	client_it it = admins.begin();
 	while (it != admins.end()) {
 		clist += ("@" + (*it).getNickname());
 		clist += " ";
@@ -119,13 +130,25 @@ bool Server::clientExist(int fd, std::string name) {
 	return false;
 }
 
-void Channel::rmUser(Client client) {
-	client_it it = admins.begin();
-	while (it != admins.end()) {
-		if ((*it).getFd() == client.getFd()) {
-			admins.erase(it); return;
+void Channel::changeAdmin() {
+	if (admins.empty()) {
+		if (!users.empty()) {
+			addAdmin(*(users.begin()));
+			users.erase(users.begin());
 		}
-		it++;
+	}
+}
+
+void Channel::rmUser(Client client) {
+	if (isAdmin(client)) {
+		client_it it = admins.begin();
+		while (it != admins.end()) {
+			if ((*it).getFd() == client.getFd()) {
+				admins.erase(it); break;
+			}
+			it++;
+		}
+		changeAdmin(); return;
 	}
 
 	client_it itu = users.begin();

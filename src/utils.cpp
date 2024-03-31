@@ -1,4 +1,12 @@
 #include "../inc/utils.hpp"
+#include <ctime>
+
+std::string getCurrentTime() {
+  std::time_t currentTime;
+  std::time(&currentTime);
+  std::string time(std::ctime(&currentTime));
+  return time;
+}
 
 int toInt(std::string& input)
 {
@@ -117,6 +125,11 @@ void Server::closeFds(){
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
 		close(serverSocket);
 	}
+}
+
+void Server::sendReplieToClient(int fd, std::string reply) {
+	if(send(fd, reply.c_str(), reply.size(), 0) == -1)
+		std::cerr << "Error: send faild" << std::endl;
 }
 
 void Server::replies(int fd, std::string reply)

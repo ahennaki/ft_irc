@@ -127,6 +127,8 @@ void Server::execute(std::string cmd, int fd) {
 			modeCmd(fd, args);
 		else if (args[0] == "INVITE")
 			inviteCmd(fd, args);
+		else if (args[0] == "TOPIC")
+			topicCmd(fd, cmd);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));

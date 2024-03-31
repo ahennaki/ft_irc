@@ -31,13 +31,9 @@ void Server::joinCmd(int fd, std::vector<std::string> cmd) {
 		keys = ft_split(cmd[2], ',');
 
 	for (size_t i = 0; i < chans.size(); i++) {
-		// if (chans[i][0] != '0')
-		// 	part();
 		if (chans[i][0] != '#')
 			replies(fd, ERR_NOSUCHCHANNEL(cli->getNickname(), chans[i]));
 		else
 			addChannel(fd, chans[i], keys[i]);
 	}
-	// std::cout << "exit join" << std::endl;
-	
 }
