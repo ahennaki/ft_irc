@@ -31,6 +31,7 @@ void Server::topicMode(char opr, std::string chan) {
 
 void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) {
 	Client* cli = getClient(nick);
+	std::string clNick = cli->getNickname();
 	Channel* ch = getChannel(chan);
 	if (nick.empty()) {
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
@@ -43,6 +44,8 @@ void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) 
 			return;
 		ch->rmUser(*cli);
 		ch->addAdmin(*cli);
+		std::string mode = "+o";
+		// replies(fd, RPL_MODECHANNEL(clNick, cli->getUsername(), cli->getFd(), chan, mode));
 	}
 	else if (opr == '-') {
 		if (!ch->isAdmin(*cli))
