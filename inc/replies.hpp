@@ -24,6 +24,7 @@
 #define RPL_JOINCHANNEL(client, user, ipaddress, chan) (":" + client + "!" + user + "@" + ipaddress + " JOIN " + chan + "\r\n")
 #define RPL_INVITEDCHANNEL(client, user, ipaddress, chan) (":" + client + "!" + user + "@" + ipaddress + " INVITE " + chan + "\r\n")
 #define RPL_KICKEDCHANNEL(client, user, ipaddress, chan, nick) (":" + client + "!" + user + "@" + ipaddress + " KICK " + chan + " " + nick + "\r\n")
+#define RPL_PARTCHANNEL(client, user, ipaddress, chan, reason) (":" + client + "!" + user + "@" + ipaddress + " PART " + chan + " for reason :" + reason + "\r\n")
 #define RPL_NOTOPIC(client, chan) (": 331 " + client + " " + chan + " :No topic is set\r\n")
 #define RPL_TOPIC(client, chan, topic) (": 332 " + client + " " + chan + " :" + topic + "\r\n")
 #define RPL_TOPICWHOTIME(client, chan, nick, setat) (": 333 " + client + " " + chan + " " + nick + " " + setat + "\r\n")

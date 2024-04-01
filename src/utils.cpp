@@ -92,7 +92,10 @@ bool isNickValid(std::string nick) {
 bool isCmd(std::string cmd) {
 	return (cmd == "PASS" || cmd == "NICK" || cmd == "USER" || cmd == "QUIT"
 			|| cmd == "JOIN" || cmd == "PART" || cmd == "KICK" || cmd == "TOPIC"
-			|| cmd == "INVITE" || cmd == "MODE" || cmd == "PRIVMSG");
+			|| cmd == "INVITE" || cmd == "MODE" || cmd == "PRIVMSG"
+			|| cmd == "pass" || cmd == "nick" || cmd == "user" || cmd == "quit"
+			|| cmd == "join" || cmd == "part" || cmd == "kick" || cmd == "topic"
+			|| cmd == "invite" || cmd == "mode" || cmd == "privmsg");
 }
 
 std::vector<std::string> ft_split(std::string cmd, char delimiter) {

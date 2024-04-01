@@ -110,25 +110,27 @@ void Server::execute(std::string cmd, int fd) {
 	if (!isCmd(args[0])) {
 		replies(fd, ERR_UNKNOWNCOMMAND(cli->getNickname(), args[0])); return;
 	}
-	if (args[0] == "PASS")
+	if (args[0] == "PASS" || args[0] == "pass")
 		passCmd(fd, args);
-	else if (args[0] == "NICK")
+	else if (args[0] == "NICK" || args[0] == "nick")
 		nickCmd(fd, args);
-	else if (args[0] == "USER")
+	else if (args[0] == "USER" || args[0] == "user")
 		userCmd(fd, args);
-	else if (args[0] == "QUIT")
+	else if (args[0] == "QUIT" || args[0] == "quit")
 		quitCmd(fd);
 	else if (cli->getRegistred()) {
-		if (args[0] == "JOIN")
+		if (args[0] == "JOIN" || args[0] == "join")
 			joinCmd(fd, args);
-		else if (args[0] == "PART")
+		else if (args[0] == "PART" || args[0] == "part")
 			partCmd(fd, args);
-		else if (args[0] == "MODE")
+		else if (args[0] == "MODE" || args[0] == "mode")
 			modeCmd(fd, args);
-		else if (args[0] == "INVITE")
+		else if (args[0] == "INVITE" || args[0] == "invite")
 			inviteCmd(fd, args);
-		else if (args[0] == "TOPIC")
+		else if (args[0] == "TOPIC" || args[0] == "topic")
 			topicCmd(fd, cmd);
+		else if (args[0] == "KICK" || args[0] == "kick")
+			kickCmd(fd, args);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));
