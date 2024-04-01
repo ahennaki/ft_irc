@@ -7,7 +7,7 @@ RM = rm -rf
 
 SRCS = main.cpp src/server.cpp src/client.cpp src/utils.cpp src/channel.cpp \
 		src/auth.cpp src/quit.cpp src/join.cpp src/part.cpp src/mode.cpp \
-		src/invite.cpp src/topic.cpp src/kick.cpp
+		src/invite.cpp src/topic.cpp src/kick.cpp src/privmsg.cpp
 INC = inc/server.hpp inc/client.hpp inc/utils.hpp inc/replies.hpp inc/utils.hpp inc/topic.hpp
 OBJS = $(SRCS:.cpp=.o)
 

@@ -71,6 +71,10 @@ class Server {
 		void topicCmd(int fd, std::string cmd);
 		void quitCmd(int fd);
 
+		void privmsgCmd(int fd, std::string cmd);
+		void channelPrivmsg(int fd, std::string chan, std::string msg);
+		void clientPrivmsg(int fd, std::string nick, std::string msg);
+
 		void modeCmd(int fd, std::vector<std::string> cmd);
 		void modeExec(int fd, std::vector<std::string> cmd);
 		void inviteOnly(char opr, std::string chan);

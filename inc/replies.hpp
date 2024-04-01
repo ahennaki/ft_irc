@@ -3,6 +3,8 @@
 
 #define ERR_NOSUCHNICK(client, nick) (": 401 " + client + " " + nick + " :No such nick/channel\r\n")
 #define ERR_NOSUCHCHANNEL(client, chan) (": 403 " + client + " " + chan + " :No such channel\r\n")
+#define ERR_NORECIPIENT(client) (": 411 " + client + " :No recipient given (PRIVMSG)\r\n")
+#define ERR_NOTEXTTOSEND(client) (": 412 " + client + " :No text to send\r\n")
 #define ERR_UNKNOWNCOMMAND(client, command) (": 421 " + client + " " + command + " :Unknown command\r\n")
 #define ERR_NONICKNAMEGIVEN(client) (": 431 " + client + " :No nickname given\r\n")
 #define ERR_ERRONEUSNICK(client) (": 432 " + client + " :Erroneus nickname\r\n")
@@ -25,6 +27,8 @@
 #define RPL_INVITEDCHANNEL(client, user, ipaddress, chan) (":" + client + "!" + user + "@" + ipaddress + " INVITE " + chan + "\r\n")
 #define RPL_KICKEDCHANNEL(client, user, ipaddress, chan, nick) (":" + client + "!" + user + "@" + ipaddress + " KICK " + chan + " " + nick + "\r\n")
 #define RPL_PARTCHANNEL(client, user, ipaddress, chan, reason) (":" + client + "!" + user + "@" + ipaddress + " PART " + chan + " for reason :" + reason + "\r\n")
+#define RPL_PRIVMSGCHANNEL(client, user, ipaddress, chan, msg) (":" + client + "!" + user + "@" + ipaddress + " PRIVMSG " + chan + " :" + msg + "\r\n")
+#define RPL_PRIVMSGUSER(client, user, ipaddress, nick, msg) (":" + client + "!" + user + "@" + ipaddress + " PRIVMSG " + nick + " :" + msg + "\r\n")
 #define RPL_NOTOPIC(client, chan) (": 331 " + client + " " + chan + " :No topic is set\r\n")
 #define RPL_TOPIC(client, chan, topic) (": 332 " + client + " " + chan + " :" + topic + "\r\n")
 #define RPL_TOPICWHOTIME(client, chan, nick, setat) (": 333 " + client + " " + chan + " " + nick + " " + setat + "\r\n")

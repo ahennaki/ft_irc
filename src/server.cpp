@@ -35,6 +35,7 @@ void Server::startServer() {
     pfd.push_back(polFd);
 
 	while (!signal) {
+		if (signal) break;
 		if (poll(&pfd[0], pfd.size(), -1) == -1)
 			throw (std::runtime_error("Error: poll faild."));
 		for (size_t i = 0; i < pfd.size(); i++) {
@@ -131,6 +132,8 @@ void Server::execute(std::string cmd, int fd) {
 			topicCmd(fd, cmd);
 		else if (args[0] == "KICK" || args[0] == "kick")
 			kickCmd(fd, args);
+		else if (args[0] == "PRIVMSG" || args[0] == "privmsg")
+			privmsgCmd(fd, cmd);
 	}
 	else
 		replies(fd, ERR_NOTREGISTERED(cli->getNickname()));
