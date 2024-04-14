@@ -54,5 +54,6 @@ void Server::topicCmd(int fd, std::string cmd) {
 	top->setName(topic[2]);
 	top->setNick(cli->getNickname());
 	top->setTime(getCurrentTime());
+	sendToAllUser(fd, ch, RPL_TOPIC(cli->getNickname(), topic[1], top->getName()));
 	replies(fd, RPL_TOPIC(cli->getNickname(), topic[1], top->getName()));
 }

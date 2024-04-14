@@ -35,14 +35,8 @@ void Server::channelPrivmsg(int fd, std::string chan, std::string msg) {
 	if (!ch->isAdmin(*cli) && !ch->isUser(*cli)) {
 		replies(fd, ERR_USERNOTINCHANNEL(cliNick, chan)); return;
 	}
-	client_it it = clients.begin();
-	while (it != clients.end()) {
-
-	std::cout << " here" <<  RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg);
-		if ((ch->isAdmin(*it) || ch->isUser(*it)) && it->getFd() != fd)
-			sendReplieToClient((*it).getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg));
-		it++;
-	}
+	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg));
+	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg);
 }
 
 void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
@@ -52,7 +46,7 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
-	replies(target->getFd(), RPL_PRIVMSGUSER(cliNick, cli->getUsername(), cli->getIpadd(), nick, msg));
+	replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), nick, msg));
 }
 
 void Server::privmsgCmd(int fd, std::string cmd) {

@@ -26,12 +26,7 @@ void Server::kickCmd(int fd, std::vector<std::string> cmd) {
 		if (!ch->isAdmin(*usr) && !ch->isUser(*usr)) {
 			replies(fd, ERR_USERNOTINCHANNEL(cli->getNickname(), cmd[1])); return;
 		}
-		client_it itc = clients.begin();
-		while (itc != clients.end()) {
-			if ((ch->isAdmin(*itc) || ch->isUser(*itc)) && (*itc).getFd() != fd)
-				sendReplieToClient((*itc).getFd(), RPL_KICKEDCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cmd[1], usr->getNickname()));
-			itc++;
-		}
+		sendToAllUser(fd, ch, RPL_KICKEDCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cmd[1], usr->getNickname()));
 		ch->rmUser(*usr);
 		replies(fd, RPL_KICKEDCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cmd[1], usr->getNickname()));
 		it++;

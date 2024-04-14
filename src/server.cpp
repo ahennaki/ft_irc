@@ -34,10 +34,10 @@ void Server::startServer() {
 	pollfd polFd = {serverSocket, POLLIN, 0};
     pfd.push_back(polFd);
 
-	while (!signal) {
-		if (signal) break;
-		if (poll(&pfd[0], pfd.size(), -1) == -1)
+	while (true) {
+		if (poll(&pfd[0], pfd.size(), -1) == -1 && !signal)
 			throw (std::runtime_error("Error: poll faild."));
+		if (signal) break;
 		for (size_t i = 0; i < pfd.size(); i++) {
 			if (pfd[i].revents && POLLIN) {
 				if (pfd[i].fd == serverSocket)
@@ -82,10 +82,10 @@ void Server::getMessage(int fd)
 	std::vector<std::string> cmd;
 	char msg[1024];
 	bzero(msg, sizeof(msg));
-	// std::cout << "RECIVE MSG" << std::endl;
 
 	ssize_t bytes = recv(fd, msg, sizeof(msg) - 1 , 0);
 
+	std::cout << "RECIVE MSG: " << msg;
 	if (bytes <= 0) {
 		std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
 		rmClientFromChans(fd);
@@ -111,6 +111,8 @@ void Server::execute(std::string cmd, int fd) {
 	if (!isCmd(args[0])) {
 		replies(fd, ERR_UNKNOWNCOMMAND(cli->getNickname(), args[0])); return;
 	}
+	if (args[0] == "PONG")
+		return;
 	if (args[0] == "PASS" || args[0] == "pass")
 		passCmd(fd, args);
 	else if (args[0] == "NICK" || args[0] == "nick")

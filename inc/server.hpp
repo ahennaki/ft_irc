@@ -77,8 +77,8 @@ class Server {
 
 		void modeCmd(int fd, std::vector<std::string> cmd);
 		void modeExec(int fd, std::vector<std::string> cmd);
-		void inviteOnly(char opr, std::string chan);
-		void topicMode(char opr, std::string chan);
+		void inviteOnly(int fd, char opr, std::string chan);
+		void topicMode(int fd, char opr, std::string chan);
 		void operatorMode(int fd, char opr, std::string chan, std::string nick);
 		void limitMode(int fd, char opr, std::string chan, std::string limit);
 		void keyMode(int fd, char opr, std::string chan, std::string key);
@@ -88,6 +88,7 @@ class Server {
 		
 		void replies(int fd, const std::string reply);
 		void sendReplieToClient(int fd, std::string reply);
+		void sendToAllUser(int fd, Channel* chan, std::string reply);
 };
 
 #endif

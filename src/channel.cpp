@@ -65,19 +65,14 @@ void Server::addClientToChan(int fd, std::string name, std::string key) {
 	if (ch->k && ch->getKey().compare(key)) {
 		replies(fd, ERR_BADCHANNELKEY(cli->getNickname(), name)); return;
 	}
-	client_it it = clients.begin();
-	while (it != clients.end()) {
-		if (ch->isAdmin(*it) || ch->isUser(*it))
-			sendReplieToClient((*it).getFd(), RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
-		it++;
-	}
 	if (!ch->userNbr())
 		ch->addAdmin(*cli);
 	else
 		ch->addUser(*cli);
+	sendToAllUser(fd, ch, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
+	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
 	if (!(ch->getTopic()->getName()).empty())
 		replies(fd, RPL_TOPIC(cli->getNickname(), ch->getName(), ch->getTopic()->getName()));
-	replies(fd, RPL_JOINCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), name));
 	replies(fd, RPL_CLIENTLIST(cli->getNickname(), name, ch->getClientList()));
 	replies(fd, RPL_ENDOFNAMES(cli->getNickname(), name));
 }

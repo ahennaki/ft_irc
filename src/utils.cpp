@@ -5,7 +5,7 @@ std::string getCurrentTime() {
   std::time_t currentTime;
   std::time(&currentTime);
   std::string time(std::ctime(&currentTime));
-  return time;
+  return time.erase(time.size() - 1);
 }
 
 int toInt(std::string& input)
@@ -95,7 +95,7 @@ bool isCmd(std::string cmd) {
 			|| cmd == "INVITE" || cmd == "MODE" || cmd == "PRIVMSG"
 			|| cmd == "pass" || cmd == "nick" || cmd == "user" || cmd == "quit"
 			|| cmd == "join" || cmd == "part" || cmd == "kick" || cmd == "topic"
-			|| cmd == "invite" || cmd == "mode" || cmd == "privmsg");
+			|| cmd == "invite" || cmd == "mode" || cmd == "privmsg" || cmd == "PONG");
 }
 
 std::vector<std::string> ft_split(std::string cmd, char delimiter) {
@@ -127,6 +127,15 @@ void Server::closeFds(){
 	if (serverSocket != -1) {
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
 		close(serverSocket);
+	}
+}
+
+void Server::sendToAllUser(int fd, Channel* ch, std::string reply) {
+	client_it it = clients.begin();
+	while (it != clients.end()) {
+		if ((ch->isAdmin(*it) || ch->isUser(*it)) && it->getFd() != fd)
+			sendReplieToClient((*it).getFd(), reply);
+		it++;
 	}
 }
 
