@@ -46,7 +46,7 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
-	replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), nick, msg));
+	replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
 }
 
 void Server::privmsgCmd(int fd, std::string cmd) {

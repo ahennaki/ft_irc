@@ -26,10 +26,10 @@
 #define RPL_INVITEDCHANNEL(client, user, ip, chan) (":" + client + "!~" + user + "@" + ip + " INVITE " + chan + "\r\n")
 #define RPL_KICKEDCHANNEL(client, user, ip, chan, nick) (":" + client + "!~" + user + "@" + ip + " KICK " + chan + " " + nick + "\r\n")
 #define RPL_PARTCHANNEL(client, user, ip, chan, reason) (":" + client + "!~" + user + "@" + ip + " PART " + chan + " :" + reason + "\r\n")
-#define RPL_PRIVMSGCHANNEL(client, user, ip, target, msg) (":" + client + "!~" + user + "@" + ip + " PRIVMSG " + target + " :" + msg + "\r\n")
+#define RPL_PRIVMSGCHANNEL(client, user, ip, target, msg) (":" + client + "!~" + user + "@" + ip + " PRIVMSG " + target + " " + msg + "\r\n")
 #define RPL_MODECHANNEL(client, user, ip, chan, mode, msg) (":" + client + "!~" + user + "@" + ip + " MODE " + chan + " " + mode + " " + msg + "\r\n")
 
-#define RPL_CONNECTED(client) (":irc.42.chat 001 " + client + " : Welcome to the IRC server\r\n")
+#define RPL_CONNECTED(client) (":irc.42.chat 001 " + client + " :Welcome to the IRC server\r\n")
 #define RPL_NOTOPIC(client, chan) (":irc.42.chat 331 " + client + " " + chan + " :No topic is set\r\n")
 #define RPL_TOPIC(client, chan, topic) (":irc.42.chat 332 " + client + " " + chan + " :" + topic + "\r\n")
 #define RPL_TOPICWHOTIME(client, chan, nick, setat) (":irc.42.chat 333 " + client + " " + chan + " " + nick + " " + setat + "\r\n")
