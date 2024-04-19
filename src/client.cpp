@@ -41,9 +41,10 @@ Client* Server::getClient(std::string nick) {
 }
 
 void Server::registerClient(int fd) {
-	if (getClient(fd)->getAuth() && !(getClient(fd)->getNickname()).empty() && !(getClient(fd)->getUsername()).empty()) {
-		getClient(fd)->setRegistred(true);
-		replies(fd, RPL_CONNECTED(getClient(fd)->getNickname()));
+	Client* cli = getClient(fd);
+	if (cli->getAuth() && !(cli->getNickname()).empty() && !(cli->getUsername()).empty()) {
+		cli->setRegistred(true);
+		replies(fd, RPL_WELCOME(cli->getNickname(), cli->getUsername(), cli->getIpadd()));
 	}
 }
 
