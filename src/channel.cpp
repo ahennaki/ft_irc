@@ -143,7 +143,8 @@ void Channel::rmUser(Client client) {
 			}
 			it++;
 		}
-		changeAdmin(); return;
+		// changeAdmin(); 
+		return;
 	}
 
 	client_it itu = users.begin();

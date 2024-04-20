@@ -26,6 +26,7 @@ class Server {
 	private:
 		std::string port;
 		std::string password;
+		std::string date;
 		int serverSocket;
 		std::vector<struct pollfd> pfd;
 		std::vector<Client> clients;

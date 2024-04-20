@@ -45,6 +45,8 @@ void Server::registerClient(int fd) {
 	if (cli->getAuth() && !(cli->getNickname()).empty() && !(cli->getUsername()).empty()) {
 		cli->setRegistred(true);
 		replies(fd, RPL_WELCOME(cli->getNickname(), cli->getUsername(), cli->getIpadd()));
+		replies(fd, RPL_YOURHOST(cli->getNickname()));
+		replies(fd, RPL_CREATED(cli->getNickname(), date));
 	}
 }
 

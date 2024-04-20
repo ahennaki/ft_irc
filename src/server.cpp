@@ -34,6 +34,8 @@ void Server::startServer() {
 	pollfd polFd = {serverSocket, POLLIN, 0};
     pfd.push_back(polFd);
 
+	date = getCurrentTime();
+
 	while (true) {
 		if (poll(&pfd[0], pfd.size(), -1) == -1 && !signal)
 			throw (std::runtime_error("Error: poll faild."));

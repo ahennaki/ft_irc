@@ -35,8 +35,8 @@ void Server::channelPrivmsg(int fd, std::string chan, std::string msg) {
 	if (!ch->isAdmin(*cli) && !ch->isUser(*cli)) {
 		replies(fd, ERR_USERNOTINCHANNEL(cliNick, chan)); return;
 	}
-	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg));
-	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg);
+	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg));
+	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg);
 }
 
 void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
@@ -46,7 +46,10 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
-	replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
+	if ((msg.substr(0, 10)).compare(":DCC SEND "))
+		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
+	else
+		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, ":" + msg));
 }
 
 void Server::privmsgCmd(int fd, std::string cmd) {
@@ -61,6 +64,7 @@ void Server::privmsgCmd(int fd, std::string cmd) {
 		replies(fd, ERR_NOTEXTTOSEND(cliNick)); return;
 	}
 	std::vector<std::string> str(ft_split(privmsg[1], ','));
+	// std::cout << "msgprivate is: " << privmsg[2] << std::endl;
 	for (size_t i = 0; i < str.size(); i++) {
 		if (str[i][0] == '#')
 			channelPrivmsg(fd, str[i], privmsg[2]);
