@@ -51,6 +51,7 @@ class Server {
 		void rmClient(int fd);
 		void closeFds();
 
+		void partChannels(int fd);
 		void addChannel(int fd, std::string name, std::string key);
 		void addClientToChan(int fd, std::string name, std::string key);
 		Channel createChannel(int fd, std::string name, std::string key);

@@ -1,6 +1,20 @@
 #include "../inc/server.hpp"
 #include "../inc/utils.hpp"
 
+void Server::partChannels(int fd) {
+	Client* cli = getClient(fd);
+	channel_it it = channels.begin();
+	while (it != channels.end()) {
+		if ((*it).isUser(*cli) || (*it).isAdmin(*cli)) {
+			Channel* ch = getChannel((*it).getName());
+			ch->rmUser(*cli);
+			replies(fd, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ""));
+			sendToAllUser(fd, ch, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ""));
+		}
+		it++;
+	}
+}
+
 void Server::partCmd(int fd, std::vector<std::string> cmd) {
 	Client* cli = getClient(fd);
 
@@ -22,10 +36,10 @@ void Server::partCmd(int fd, std::vector<std::string> cmd) {
 				client_it itc = clients.begin();
 				while (itc != clients.end()) {
 					if ((ch->isAdmin(*itc) || ch->isUser(*itc)) && (*itc).getFd() != fd)
-						sendReplieToClient((*itc).getFd(), RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), cmd[2]));
+						sendReplieToClient((*itc).getFd(), RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ":" + cmd[2]));
 					itc++;
 				}
-				replies(fd, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), cmd[2]));
+				replies(fd, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ":" + cmd[2]));
 			}
 			else
 				replies(fd, ERR_NOTONCHANNEL(cli->getNickname(), ch->getName()));

@@ -124,6 +124,7 @@ void Server::closeFds(){
 		close((*it).getFd());
 		it++;
 	}
+
 	if (serverSocket != -1) {
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
 		close(serverSocket);

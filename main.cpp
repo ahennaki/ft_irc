@@ -12,6 +12,7 @@ int main(int ac, char **av)
 	try{
 		signal(SIGINT, server.signalHandler);
 		signal(SIGQUIT, server.signalHandler);
+		signal(SIGTSTP, server.signalHandler);
 		server.validPort();
 		server.validPassword();
 		server.startServer();

@@ -33,7 +33,6 @@ void Server::startServer() {
 
 	pollfd polFd = {serverSocket, POLLIN, 0};
     pfd.push_back(polFd);
-
 	date = getCurrentTime();
 
 	while (true) {
@@ -88,6 +87,7 @@ void Server::getMessage(int fd)
 	ssize_t bytes = recv(fd, msg, sizeof(msg) - 1 , 0);
 
 	std::cout << "RECIVE MSG: " << msg;
+
 	if (bytes <= 0) {
 		std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
 		rmClientFromChans(fd);

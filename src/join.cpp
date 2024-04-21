@@ -30,6 +30,10 @@ void Server::joinCmd(int fd, std::vector<std::string> cmd) {
 	if (!cmd[2].empty())
 		keys = ft_split(cmd[2], ',');
 
+	if (chans.size() == 1 && chans[0].size() == 1 && !chans[0].compare("0")) {
+		partChannels(fd); return;
+	}
+
 	for (size_t i = 0; i < chans.size(); i++) {
 		if (chans[i][0] != '#')
 			replies(fd, ERR_NOSUCHCHANNEL(cli->getNickname(), chans[i]));
