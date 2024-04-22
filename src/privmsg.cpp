@@ -35,6 +35,10 @@ void Server::channelPrivmsg(int fd, std::string chan, std::string msg) {
 	if (!ch->isAdmin(*cli) && !ch->isUser(*cli)) {
 		replies(fd, ERR_USERNOTINCHANNEL(cliNick, chan)); return;
 	}
+	if (msg[0] == ':') {
+		sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg));
+		std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg); return;
+	}
 	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg));
 	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg);
 }
@@ -46,7 +50,7 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
-	if ((msg.substr(0, 10)).compare(":DCC SEND "))
+	if (msg[0] == ':')
 		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
 	else
 		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, ":" + msg));
