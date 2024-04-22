@@ -162,15 +162,43 @@ void Server::modeExec(int fd, std::vector<std::string> cmd) {
 	}
 }
 
+std::string getModes(Channel ch) {
+	std::string modes;
+
+	if (ch.i || ch.t || ch.k || ch.l) {
+		modes = "+";
+		if (ch.i)
+			modes += "i";
+		if (ch.t)
+			modes += "t";
+		if (ch.k)
+			modes += "k";
+		if (ch.l)
+			modes += "l";
+	}
+	if (ch.k)
+		modes += " " + ch.getKey();
+	if (ch.l)
+		modes += " " + toString(ch.limit);
+	std::cout << "limit " << toString(ch.limit) << std::endl;
+	return modes;
+}
+
 void Server::modeCmd(int fd, std::vector<std::string> cmd) {
 	Client* cli = getClient(fd);
-	if (cmd.size() < 3) {
+	if (cmd.size() < 2) {
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
 	}
 
 	Channel* chan = getChannel(cmd[1]);
 	if (!chan) {
 		replies(fd, ERR_NOSUCHCHANNEL(cli->getNickname(), cmd[1])); return;
+	}
+	if (cmd.size() == 2) {
+		std::string mode = getModes(*chan);
+		replies(fd, RPL_CHANNELMODEIS(cli->getNickname(), chan->getName(), mode));
+		replies(fd, RPL_CREATIONTIME(cli->getNickname(), chan->getName(), chan->chanDate));
+		return;
 	}
 	if (!chan->isUser(*cli) && !chan->isAdmin(*cli)) {
 		replies(fd, ERR_USERNOTINCHANNEL(cli->getNickname(), chan->getName())); return;

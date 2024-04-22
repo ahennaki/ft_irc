@@ -14,5 +14,6 @@ bool isCmd(std::string cmd);
 bool isMode(char m);
 
 int toInt(std::string& input);
+std::string toString(size_t& input);
 
 #endif

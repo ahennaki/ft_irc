@@ -13,6 +13,7 @@ class Channel {
 		std::vector<Client> invited;
 
 	public:
+		std::string chanDate;
 		size_t limit;
 		bool i;
 		bool t;

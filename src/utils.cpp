@@ -26,6 +26,24 @@ int toInt(std::string& input)
 	return 0;
 }
 
+std::string toString(size_t& input)
+{
+    try
+    {
+        std::stringstream str;
+
+        str << input;
+
+        return str.str();
+    }
+    catch(std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+    return 0;
+}
+
+
 void Server::validPort() {
 	if (port.find_first_not_of("0123456789") != std::string::npos)
 		throw (std::runtime_error("Invalide port."));

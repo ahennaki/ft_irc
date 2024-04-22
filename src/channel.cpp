@@ -1,4 +1,5 @@
 #include "../inc/server.hpp"
+#include "../inc/utils.hpp"
 
 Channel Server::createChannel(int fd, std::string name, std::string key) {
 	Channel channel;
@@ -7,6 +8,7 @@ Channel Server::createChannel(int fd, std::string name, std::string key) {
 	channel.k = false;
 	channel.l = false;
 	channel.limit = 0;
+	channel.chanDate = getCurrentTime();
 	channel.setName(name);
 	channel.setKey(key);
 	channel.addAdmin(*getClient(fd));

@@ -33,6 +33,8 @@
 #define RPL_YOURHOST(client) (":irc.42.chat 002 " + client + " :Your host is irc.42.chat, running version <version>\r\n")
 #define RPL_CREATED(client, date) (":irc.42.chat 003 " + client + " :This server was created " + date + "\r\n")
 
+#define RPL_CHANNELMODEIS(client, chan, mode) (":irc.42.chat 324 " + client + " " + chan + " " + mode + "\r\n")
+#define RPL_CREATIONTIME(client, chan, date) (":irc.42.chat 329 " + client + " " + chan + " " + date + "\r\n")
 #define RPL_NOTOPIC(client, chan) (":irc.42.chat 331 " + client + " " + chan + " :No topic is set\r\n")
 #define RPL_TOPIC(client, chan, topic) (":irc.42.chat 332 " + client + " " + chan + " :" + topic + "\r\n")
 #define RPL_TOPICWHOTIME(client, chan, nick, setat) (":irc.42.chat 333 " + client + " " + chan + " " + nick + " " + setat + "\r\n")
