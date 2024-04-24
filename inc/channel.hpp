@@ -1,5 +1,4 @@
-#ifndef CHANNEL_HPP
-#define CHANNEL_HPP
+#pragma once
 
 #include "topic.hpp"
 
@@ -42,4 +41,3 @@ class Channel {
 		size_t userNbr();
 };
 
-#endif

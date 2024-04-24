@@ -1,5 +1,4 @@
-#ifndef REPLIES_HPP
-#define REPLIES_HPP
+#pragma once
 
 #define ERR_NOSUCHNICK(client, nick) (":irc.42.chat 401 " + client + " " + nick + " :No such nick/channel\r\n")
 #define ERR_NOSUCHCHANNEL(client, chan) (":irc.42.chat 403 " + client + " " + chan + " :No such channel\r\n")
@@ -42,5 +41,4 @@
 #define RPL_CLIENTLIST(client, chan, clientslist) (":irc.42.chat 353 " + client + " = " + chan + " :" + clientslist + "\r\n")
 #define RPL_ENDOFNAMES(client, chan) (":irc.42.chat 366 " + client + " " + chan + " :END of /NAMES list\r\n")
 
-#endif
  

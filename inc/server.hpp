@@ -1,5 +1,4 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#pragma once
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -91,6 +90,7 @@ class Server {
 		void replies(int fd, const std::string reply);
 		void sendReplieToClient(int fd, std::string reply);
 		void sendToAllUser(int fd, Channel* chan, std::string reply);
+		// Bot handling
+		void botReseveMsg(int fd, std::string msg);
 };
 
-#endif

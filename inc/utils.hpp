@@ -1,5 +1,4 @@
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#pragma once
 
 #include "server.hpp"
 
@@ -16,4 +15,3 @@ bool isMode(char m);
 int toInt(std::string& input);
 std::string toString(size_t& input);
 
-#endif

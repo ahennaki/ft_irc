@@ -1,5 +1,4 @@
-#ifndef TOPIC_HPP
-#define TOPIC_HPP
+#pragma once
 
 #include <iostream>
 
@@ -23,4 +22,4 @@ class Topic {
 
 };
 
-#endif
+

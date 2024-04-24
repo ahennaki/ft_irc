@@ -47,6 +47,8 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	Client* cli = getClient(fd);
 	std::string cliNick = cli->getNickname();
 	Client* target = getClient(nick);
+	if (target && nick == "bot")
+		botReseveMsg(fd, msg);
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
@@ -68,7 +70,6 @@ void Server::privmsgCmd(int fd, std::string cmd) {
 		replies(fd, ERR_NOTEXTTOSEND(cliNick)); return;
 	}
 	std::vector<std::string> str(ft_split(privmsg[1], ','));
-	// std::cout << "msgprivate is: " << privmsg[2] << std::endl;
 	for (size_t i = 0; i < str.size(); i++) {
 		if (str[i][0] == '#')
 			channelPrivmsg(fd, str[i], privmsg[2]);
