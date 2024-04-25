@@ -17,6 +17,8 @@ pollfd Bot::CreatFd(int fd) {
   _fd.revents = 0;
   return _fd;
 }
+
+struct pollfd * Bot::FdData() { return (&_fds); }
 const int &Bot::getIrcServer() { return (this->_servSock); }
 
 bool Bot::Send(int socket, std::string msg) {
@@ -45,6 +47,7 @@ Bot::Bot(int servSock, int ac, char **av) {
     throw std::runtime_error("PORT not valid !!");
   this->pass = av[2];
   this->_servSock = servSock;
-  _fds.push_back(CreatFd(servSock));
+  _fds = CreatFd(servSock);
   ConnectIRC();
+  
 }

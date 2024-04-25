@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 RM = rm -rf
 
-BONUS_SRCS = bonus/bot.cpp bonus/CBot.cpp bonus/utils.cpp \
+BONUS_SRCS = bonus/bot.cpp bonus/CBot.cpp \
 		src/server.cpp src/client.cpp src/utils.cpp src/channel.cpp \
 		src/auth.cpp src/quit.cpp src/join.cpp src/part.cpp src/mode.cpp \
 		src/invite.cpp src/topic.cpp src/kick.cpp src/privmsg.cpp

@@ -147,6 +147,7 @@ void Server::closeFds(){
 		std::cout << "Server \"" << serverSocket << "\" Disconnected" << std::endl;
 		close(serverSocket);
 	}
+	
 }
 
 void Server::sendToAllUser(int fd, Channel* ch, std::string reply) {
