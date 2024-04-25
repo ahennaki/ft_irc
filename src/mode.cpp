@@ -107,15 +107,7 @@ void Server::keyMode(int fd, char opr, std::string chan, std::string key) {
 	Client* cli = getClient(fd);
 	std::string clNick = cli->getNickname();
 	std::string mode;
-	// if (opr == '+') {
-	// 	if (key.empty()) {
-	// 		replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
-	// 	}
-	// 	ch->k = true;
-	// 	ch->setKey(key);
-	// 	return;
-	// }
-	// ch->k = false;
+
 	if (opr == '+') {
 		if (key.empty()) {
 			replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
