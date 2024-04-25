@@ -86,7 +86,7 @@ void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
 		replies(fd, ERR_UNKNOWNCOMMAND(getClient(fd)->getNickname(), "MODE +l" + limit)); return;
 	}
 	if (opr == '+') {
-		if (ch->l)
+		if (ch->l && ch->l == lim)
 			return;
 		mode = "+l";
 		ch->l = true;

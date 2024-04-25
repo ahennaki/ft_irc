@@ -3,3 +3,22 @@
 // check pass (pass incorrect => bot should not connect) handel
 // stell have the problem the bot hung the server; handel
 // bot not working in limechat
+ctrl + d
+
+mode #l +l -5
+
+
+
+join #l
+:hisoka!~d@127.0.0.1 JOIN #l
+:irc.42.chat 353 hisoka = #l :@hisoka
+:irc.42.chat 366 hisoka #l :END of /NAMES list
+mode #l +l -5
+:hisoka!~d@127.0.0.1 MODE #l +l -5
+mode #l
+:irc.42.chat 324 hisoka #l +l 18446744073709551611
+:irc.42.chat 329 hisoka #l Thu Apr 25 20:07:21 2024
+mode #l +l 1
+mode #l
+:irc.42.chat 324 hisoka #l +l 18446744073709551611
+:irc.42.chat 329 hisoka #l Thu Apr 25 20:07:21 2024
