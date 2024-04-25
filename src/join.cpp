@@ -27,8 +27,8 @@ void Server::joinCmd(int fd, std::vector<std::string> cmd) {
 	}
 	std::vector<std::string> chans = ft_split(cmd[1], ',');
 	std::vector<std::string> keys(chans.size());
-	if (!cmd[2].empty())
-		keys = ft_split(cmd[2], ',');
+	// if (!cmd[2].empty())
+	// 	keys = ft_split(cmd[2], ',');
 
 	if (chans.size() == 1 && chans[0].size() == 1 && !chans[0].compare("0")) {
 		partChannels(fd); return;

@@ -94,7 +94,7 @@ void Server::getMessage(int fd) {
     bzero(msg, sizeof(msg));
     bytes = recv(fd, msg, sizeof(msg) - 1, 0);
     buff += msg;
-    if (buff.find_first_of("\n\r") != std::string::npos)
+    if (buff.find_first_of("\r\n") != std::string::npos)
       break;
   }
   std::cout << "RECIVE MSG: " << buff;
