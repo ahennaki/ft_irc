@@ -187,7 +187,6 @@ UserGit parccing(std::string Buffer) {
   user.followers = info["\"followers\""];
   user.following = info["\"following\""];
   user.public_repo = info["\"public_repos\""];
-  user.location = info["\"location\""];
   user.dateCreation = info["\"created_at\""];
   return user;
 }
@@ -219,7 +218,7 @@ void Server::botReseveMsg(int fd, std::string msg) {
 
     if (CURLE_OK != res) {
       std::cerr << "cURL error: " << res << '\n';
-      replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), "User not found!")); return;
+      replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":User not found!")); return;
     } else {
       std::cout << "~~~~ Succeed ~~~" << std::endl;
     }
@@ -227,16 +226,14 @@ void Server::botReseveMsg(int fd, std::string msg) {
   user = parccing(readBuffer);
 
   if (user.existe == true) {
-    readBuffer = "\n" + user.name + " create this accout at " + user.dateCreation +
-                 "\n" + "LOCATION : " + user.location + "\n" +
-                 "Bio : " + user.bio + "\n" +
-                 "Number of Followers    : " + user.followers + "\n" +
-                 "Number of Following    : " + user.following + "\n" +
-                 "Number of public repos : " + user.public_repo;
-  // std::cout << readBuffer << std::endl;
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), readBuffer));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), user.name + " create this accout at " + user.dateCreation));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":LINK :" + url));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":Bio " + user.bio));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":Number of Followers    " + user.followers));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":Number of Following    " + user.following));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":Number of public repos " + user.public_repo));
   }
   else {
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), "User not found!"));
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), ":User not found!"));
   }
 }

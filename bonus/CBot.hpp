@@ -47,7 +47,6 @@ typedef struct s_usergit {
   std::string followers;
   std::string following;
   std::string public_repo;
-  std::string location;
   std::string dateCreation;
 } UserGit;
 
