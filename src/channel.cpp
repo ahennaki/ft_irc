@@ -58,14 +58,14 @@ Channel* Server::getChannel(std::string name) {
 void Server::addClientToChan(int fd, std::string name, std::string key) {
 	Channel* ch = getChannel(name);
 	Client* cli = getClient(fd);
-	if (ch->i && !ch->isInvited(*cli)) {
-		replies(fd, ERR_INVITEONLYCHAN(cli->getNickname(), ch->getName())); return;
+	if (ch->k && ch->getKey().compare(key)) {
+		replies(fd, ERR_BADCHANNELKEY(cli->getNickname(), name)); return;
 	}
 	if (ch->l && ch->limit <= ch->userNbr()) {
 		replies(fd, ERR_CHANNELISFULL(cli->getNickname(), ch->getName())); return;
 	}
-	if (ch->k && ch->getKey().compare(key)) {
-		replies(fd, ERR_BADCHANNELKEY(cli->getNickname(), name)); return;
+	if (ch->i && !ch->isInvited(*cli)) {
+		replies(fd, ERR_INVITEONLYCHAN(cli->getNickname(), ch->getName())); return;
 	}
 	if (!ch->userNbr())
 		ch->addAdmin(*cli);

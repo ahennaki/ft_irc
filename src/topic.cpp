@@ -1,6 +1,16 @@
 #include "../inc/server.hpp"
 #include "../inc/utils.hpp"
 
+void Topic::setName(std::string topic) {
+	std::vector<std::string> str(splitCmd(topic));
+	if (topic[0] == ':') {
+		topic.erase(0, 1);
+		this->topic = topic;
+	}
+	else
+		this->topic = str[0];
+}
+
 std::vector<std::string> splitTopic(std::string cmd) {
 	std::vector<std::string> tokens;
 	std::string str;
@@ -54,6 +64,6 @@ void Server::topicCmd(int fd, std::string cmd) {
 	top->setName(topic[2]);
 	top->setNick(cli->getNickname());
 	top->setTime(getCurrentTime());
-	sendToAllUser(fd, ch, RPL_TOPIC(cli->getNickname(), topic[1], top->getName()));
-	replies(fd, RPL_TOPIC(cli->getNickname(), topic[1], top->getName()));
+	sendToAllUser(fd, ch, RPL_TOPICCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), topic[1], top->getName()));
+	replies(fd, RPL_TOPICCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), topic[1], top->getName()));
 }

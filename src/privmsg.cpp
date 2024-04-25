@@ -29,6 +29,8 @@ void Server::channelPrivmsg(int fd, std::string chan, std::string msg) {
 	Channel* ch = getChannel(chan);
 	Client* cli = getClient(fd);
 	std::string cliNick = cli->getNickname();
+	std::vector<std::string> str(splitCmd(msg));
+
 	if (!ch) {
 		replies(fd, ERR_NOSUCHCHANNEL(cliNick, chan)); return;
 	}
@@ -39,14 +41,16 @@ void Server::channelPrivmsg(int fd, std::string chan, std::string msg) {
 		sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg));
 		std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, msg); return;
 	}
-	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg));
-	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + msg);
+	sendToAllUser(fd, ch, RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + str[0]));
+	std::cout << RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), chan, ":" + str[0]);
 }
 
 void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	Client* cli = getClient(fd);
 	std::string cliNick = cli->getNickname();
 	Client* target = getClient(nick);
+	std::vector<std::string> str(splitCmd(msg));
+
 	if (target && nick == "bot")
 		botReseveMsg(fd, msg);
 	if (!target) {
@@ -55,7 +59,7 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	if (msg[0] == ':')
 		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
 	else
-		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, ":" + msg));
+		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, ":" + str[0]));
 }
 
 void Server::privmsgCmd(int fd, std::string cmd) {

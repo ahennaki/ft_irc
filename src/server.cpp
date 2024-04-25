@@ -200,7 +200,7 @@ void Server::botReseveMsg(int fd, std::string msg) {
   std::string url;
   if (msg.length() == 1) {
     user.existe = false;
-    sendReplieToClient(fd, "User Not found !!");
+    sendReplieToClient(fd, "User Not found !!\r\n");
     return;
   }
   url = "https://api.github.com/users/" + msg;
@@ -229,10 +229,10 @@ void Server::botReseveMsg(int fd, std::string msg) {
                  "Bio : " + user.bio + "\n" +
                  "Number of Followers    : " + user.followers + "\n" +
                  "Number of Following    : " + user.following + "\n" +
-                 "Number of public repos : " + user.public_repo + "\n";
+                 "Number of public repos : " + user.public_repo + "\r\n";
     sendReplieToClient(fd, readBuffer);
   } else {
-    sendReplieToClient(fd, "User Not found !!\n");
+    sendReplieToClient(fd, "User Not found !!\r\n");
   }
   puts("const char EXIT HEARE");
 }

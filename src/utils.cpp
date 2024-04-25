@@ -49,7 +49,7 @@ void Server::validPort() {
 		throw (std::runtime_error("Invalide port."));
 
 	int prt = toInt(port);
-	if (prt < 0 || prt > 65535)
+	if (prt < 1024 || prt > 65535)
 		throw (std::runtime_error("Invalide port."));
 }
 
