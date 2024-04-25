@@ -28,6 +28,7 @@
 #define RPL_PRIVMSGCHANNEL(client, user, ip, target, msg) (":" + client + "!~" + user + "@" + ip + " PRIVMSG " + target + " " + msg + "\r\n")
 #define RPL_MODECHANNEL(client, user, ip, chan, mode, msg) (":" + client + "!~" + user + "@" + ip + " MODE " + chan + " " + mode + " " + msg + "\r\n")
 #define RPL_TOPICCHANNEL(client, user, ip, chan, topic) (":" + client + "!~" + user + "@" + ip + " TOPIC " + chan + " :" + topic + "\r\n")
+#define RPL_BOTRPL(client, user, ip, msg) (":" + client + "!~" + user + "@" + ip + " BOT :" + msg + "\r\n")
 
 #define RPL_WELCOME(client, user, ip) (":irc.42.chat 001 " + client + " :Welcome to the irc Network, " + client + "!~" + user + "@" + ip + "\r\n")
 #define RPL_YOURHOST(client) (":irc.42.chat 002 " + client + " :Your host is irc.42.chat, running version <version>\r\n")

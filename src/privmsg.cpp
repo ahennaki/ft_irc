@@ -51,8 +51,13 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 	Client* target = getClient(nick);
 	std::vector<std::string> str(splitCmd(msg));
 
-	if (target && nick == "bot")
-		botReseveMsg(fd, msg);
+	if (target && nick == "bot") {
+		if (msg[0] == ':')
+			botReseveMsg(fd, msg.substr(1));
+		else
+			botReseveMsg(fd, str[0]);
+		return;
+	}
 	if (!target) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}

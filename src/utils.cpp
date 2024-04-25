@@ -90,6 +90,9 @@ std::vector<std::string> splitMessage(std::string str)
 
 bool Server::isNickUsed(std::string nick) {
 	client_it it = clients.begin();
+
+	if (nick == "bot")
+		return false;
 	while (it != clients.end()) {
 		if (!((*it).getNickname()).compare(nick))
 			return true;

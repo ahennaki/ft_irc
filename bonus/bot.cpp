@@ -18,11 +18,18 @@ int main(int ac, char **av) {
       std::cout << fd << std::endl;
       if (Bot.FdData()->revents & POLLIN) {
         char data[1024] = {'\0'};
+        std::string str;
 
         int bytes = recv(Bot._servSock, data, 1024, 0);
         std::cout << "bytes " << bytes << std::endl;
-        if (bytes > 0)
+        if (bytes > 0) {
+          str = data;
+          if (str.substr(0, 38) == ":irc.42.chat 464 * :Password incorrect") {
+            std::cout << data;
+            break;
+          }
           std::cout << data;
+        }
         else {
           std::cout << "exit";
           break;

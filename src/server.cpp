@@ -158,32 +158,32 @@ UserGit parccing(std::string Buffer) {
   std::string key;
   std::string val;
   std::map<std::string, std::string>::iterator it;
-  int i;
-  puts("const char EXIT HEARE 1");
+  int i = 0;
+
   Buffer.erase(0, 1);
-  puts("const char EXIT HEARE 2");
   Buffer.erase(Buffer.length() - 1, 1);
-  puts("const char EXIT HEARE 3");
+  
   std::map<std::string, std::string> info;
-  puts("const char EXIT HEARE 4");
   std::istrstream buff(Buffer.c_str());
-  puts("const char EXIT HEARE 5");
   std::string line;
-  puts("const char EXIT HEARE 6");
-  std::cout << Buffer << std::endl;
+  // std::cout << Buffer << std::endl;
+  
   while (std::getline(buff, line, ',')) {
     i = line.find(':');
-    key = line.substr(0, i);
-    val = line.substr(i, line.length());
-    info[key] = val;
+    if (i > 0) {
+      key = line.substr(0, i);
+      val = line.substr(i, line.length());
+      info[key] = val;
+    }
   }
-  puts("const char EXIT HEARE");
   it = info.find("\"message\"");
-  if (it != info.end())
+  if (it != info.end()) {
     user.existe = false;
+    return user;
+  }
   user.existe = true;
   user.name = info["\"login\""];
-  user.bio = info["\bio\""];
+  user.bio = info["\"bio\""];
   user.followers = info["\"followers\""];
   user.following = info["\"following\""];
   user.public_repo = info["\"public_repos\""];
@@ -198,11 +198,12 @@ void Server::botReseveMsg(int fd, std::string msg) {
   CURLcode res;
   std::string readBuffer;
   std::string url;
-  if (msg.length() == 1) {
-    user.existe = false;
-    sendReplieToClient(fd, "User Not found !!\r\n");
-    return;
-  }
+  Client* cli = getClient(fd);
+  // if (msg.length() == 1) {
+  //   user.existe = false;
+  //   sendReplieToClient(fd, "User Not found !!\r\n");
+  //   return;
+  // }
   url = "https://api.github.com/users/" + msg;
   curl = curl_easy_init();
   if (curl) {
@@ -218,21 +219,24 @@ void Server::botReseveMsg(int fd, std::string msg) {
 
     if (CURLE_OK != res) {
       std::cerr << "cURL error: " << res << '\n';
+      replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), "User not found!")); return;
     } else {
       std::cout << "~~~~ Succeed ~~~" << std::endl;
     }
   }
   user = parccing(readBuffer);
+
   if (user.existe == true) {
-    readBuffer = user.name + " create this accout at " + user.dateCreation +
+    readBuffer = "\n" + user.name + " create this accout at " + user.dateCreation +
                  "\n" + "LOCATION : " + user.location + "\n" +
                  "Bio : " + user.bio + "\n" +
                  "Number of Followers    : " + user.followers + "\n" +
                  "Number of Following    : " + user.following + "\n" +
-                 "Number of public repos : " + user.public_repo + "\r\n";
-    sendReplieToClient(fd, readBuffer);
-  } else {
-    sendReplieToClient(fd, "User Not found !!\r\n");
+                 "Number of public repos : " + user.public_repo;
+  // std::cout << readBuffer << std::endl;
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), readBuffer));
   }
-  puts("const char EXIT HEARE");
+  else {
+    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), cli->getNickname(), "User not found!"));
+  }
 }
