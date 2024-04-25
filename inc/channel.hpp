@@ -13,7 +13,7 @@ class Channel {
 
 	public:
 		std::string chanDate;
-		size_t limit;
+		int limit;
 		bool i;
 		bool t;
 		bool k;
@@ -38,6 +38,6 @@ class Channel {
 		void rmUser(Client client);
 		void changeAdmin();
 		std::string getClientList();
-		size_t userNbr();
+		int userNbr();
 };
 

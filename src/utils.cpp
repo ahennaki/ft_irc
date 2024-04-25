@@ -26,7 +26,7 @@ int toInt(std::string& input)
 	return 0;
 }
 
-std::string toString(size_t& input)
+std::string toString(int& input)
 {
     try
     {

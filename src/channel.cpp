@@ -96,9 +96,9 @@ std::string Channel::getClientList() {
 	return clist;
 }
 
-size_t Channel::userNbr() {
+int Channel::userNbr() {
 	client_it it = admins.begin();
-	size_t nb = 0;
+	int nb = 0;
 	while (it != admins.end()) {
 		nb++;
 		it++;

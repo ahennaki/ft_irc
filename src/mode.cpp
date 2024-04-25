@@ -81,12 +81,12 @@ void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
 		replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
 	}
 
-	size_t lim = toInt(limit);
+	int lim = toInt(limit);
 	if (opr == '+' && lim < 1) {
 		replies(fd, ERR_UNKNOWNCOMMAND(getClient(fd)->getNickname(), "MODE +l" + limit)); return;
 	}
 	if (opr == '+') {
-		if (ch->l && ch->l == lim)
+		if (ch->l && ch->limit == lim)
 			return;
 		mode = "+l";
 		ch->l = true;
