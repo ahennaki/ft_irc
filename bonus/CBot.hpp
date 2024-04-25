@@ -25,9 +25,9 @@ private:
   sockaddr_in serverAddress;
   sockaddr_in HttpAddress;
   std::string ApiBuffer;
-
-public:
   int _servSock;
+  
+public:
   Bot(int servSock, int ac, char **av);
 
   void ConnectIRC();
@@ -38,6 +38,8 @@ public:
   const int &getIrcServer();
   pollfd CreatFd(int fd);
   struct pollfd *FdData();
+
+  int servSock() const ;
 };
 
 typedef struct s_usergit {

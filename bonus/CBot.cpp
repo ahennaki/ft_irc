@@ -51,3 +51,4 @@ Bot::Bot(int servSock, int ac, char **av) {
   ConnectIRC();
   
 }
+int Bot::servSock() const { return _servSock; }

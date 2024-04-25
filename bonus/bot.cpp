@@ -20,7 +20,7 @@ int main(int ac, char **av) {
         char data[1024] = {'\0'};
         std::string str;
 
-        int bytes = recv(Bot._servSock, data, 1024, 0);
+        int bytes = recv(Bot.servSock(), data, 1024, 0);
         std::cout << "bytes " << bytes << std::endl;
         if (bytes > 0) {
           str = data;
@@ -36,7 +36,7 @@ int main(int ac, char **av) {
         }
       }
     }
-    close(Bot._servSock);
+    close(Bot.servSock());
   } catch (std::exception &e) {
     std::cout << e.what() << std::endl;
   }
