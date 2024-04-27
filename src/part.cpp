@@ -22,8 +22,19 @@ void Server::partCmd(int fd, std::vector<std::string> cmd) {
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
 	}
 
+	std::string reason;
 	if (cmd.size() == 2)
-		cmd.push_back("No reason set");
+		reason = "";
+	else {
+		if (cmd[2][0] == ':') {
+			if (cmd[2][1] == ':')
+				cmd[2].erase(0, 1);
+			for (size_t i = 2; i < cmd.size(); i++)
+				reason += cmd[i] + " ";
+		}
+		else
+			reason = ":" + cmd[2];	
+	}
 
 	std::vector<std::string> chans = ft_split(cmd[1], ',');
 	for (size_t i = 0; i < chans.size(); i++) {
@@ -32,14 +43,9 @@ void Server::partCmd(int fd, std::vector<std::string> cmd) {
 		else {
 			Channel* ch = getChannel(chans[i]);
 			if (ch->isAdmin(*cli) || ch->isUser(*cli)) {
+				sendToAllUser(fd, ch, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), reason));
 				ch->rmUser(*cli);
-				client_it itc = clients.begin();
-				while (itc != clients.end()) {
-					if ((ch->isAdmin(*itc) || ch->isUser(*itc)) && (*itc).getFd() != fd)
-						sendReplieToClient((*itc).getFd(), RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ":" + cmd[2]));
-					itc++;
-				}
-				replies(fd, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), ":" + cmd[2]));
+				replies(fd, RPL_PARTCHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), ch->getName(), reason));
 			}
 			else
 				replies(fd, ERR_NOTONCHANNEL(cli->getNickname(), ch->getName()));

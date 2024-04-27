@@ -26,6 +26,7 @@
 #define RPL_INVITEDCHANNEL(client, user, ip, chan) (":" + client + "!~" + user + "@" + ip + " INVITE " + chan + "\r\n")
 #define RPL_KICKEDCHANNEL(client, user, ip, chan, nick) (":" + client + "!~" + user + "@" + ip + " KICK " + chan + " " + nick + "\r\n")
 #define RPL_PARTCHANNEL(client, user, ip, chan, reason) (":" + client + "!~" + user + "@" + ip + " PART " + chan + " " + reason + "\r\n")
+#define RPL_QUITCHANNEL(client, user, ip) (":" + client + "!~" + user + "@" + ip + " QUIT :Client Quit\r\n")
 #define RPL_PRIVMSGCHANNEL(client, user, ip, target, msg) (":" + client + "!~" + user + "@" + ip + " PRIVMSG " + target + " " + msg + "\r\n")
 #define RPL_MODECHANNEL(client, user, ip, chan, mode, msg) (":" + client + "!~" + user + "@" + ip + " MODE " + chan + " " + mode + " " + msg + "\r\n")
 #define RPL_TOPICCHANNEL(client, user, ip, chan, topic) (":" + client + "!~" + user + "@" + ip + " TOPIC " + chan + " :" + topic + "\r\n")

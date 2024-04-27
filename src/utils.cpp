@@ -26,6 +26,24 @@ int toInt(std::string& input)
 	return 0;
 }
 
+long long toLong(std::string& input)
+{
+	try
+	{
+		/* code */
+		long long i;
+		std::stringstream str(input);
+
+		str >> i;
+		return i;
+	}
+	catch(std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+	return 0;
+}
+
 std::string toString(int& input)
 {
     try

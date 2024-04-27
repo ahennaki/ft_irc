@@ -81,13 +81,14 @@ void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
 	Client* cli = getClient(fd);
 	std::string clNick = cli->getNickname();
 	std::string mode;
+
 	if (opr == '+' && limit.empty()) {
 		replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
 	}
 
-	int lim = toInt(limit);
-	if (opr == '+' && lim < 1) {
-		replies(fd, ERR_UNKNOWNCOMMAND(getClient(fd)->getNickname(), "MODE +l" + limit)); return;
+	long long lim = toInt(limit);
+	if (opr == '+' && (lim < 1 || lim > INT_MAX)) {
+		return;
 	}
 	if (opr == '+') {
 		if (ch->l && ch->limit == lim)
@@ -142,23 +143,26 @@ void Server::modeExec(int fd, std::vector<std::string> cmd) {
 	while (args.size() < opt.size())
 		args.push_back("");	
 
-	for (size_t i = 1; i < opt.size(); i++) {
-		if ((opt[0] != '-' && opt[0] != '+') || !isMode(opt[i])) {
+	for (size_t i = 0; i < opt.size(); i++) {
+		if (opt[i] != '-' && opt[i] != '+' && !isMode(opt[i])) {
 			replies(fd, ERR_UNKNOWNMODE(getClient(fd)->getNickname(), opt)); return;
 		}
 	}
+	char oper = '+';
 	size_t j = 0;
-	for (size_t i = 1; i < opt.size(); i++) {
-		if (opt[i] == 'i')
-			inviteOnly(fd, opt[0], cmd[1]);
+	for (size_t i = 0; i < opt.size(); i++) {
+		if (opt[i] == '+' || opt[i] == '-')
+			oper = opt[i];
+		else if (opt[i] == 'i')
+			inviteOnly(fd, oper, cmd[1]);
 		else if (opt[i] == 't')
-			topicMode(fd, opt[0], cmd[1]);
+			topicMode(fd, oper, cmd[1]);
 		else if (opt[i] == 'o')
-			operatorMode(fd, opt[0], cmd[1], args[j++]);
+			operatorMode(fd, oper, cmd[1], args[j++]);
 		else if (opt[i] == 'l')
-			limitMode(fd, opt[0], cmd[1], args[j++]);
+			limitMode(fd, oper, cmd[1], args[j++]);
 		else if (opt[i] == 'k')
-			keyMode(fd, opt[0], cmd[1], args[j++]);
+			keyMode(fd, oper, cmd[1], args[j++]);
 	}
 }
 
