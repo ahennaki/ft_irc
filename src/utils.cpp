@@ -88,13 +88,33 @@ std::vector<std::string> splitMessage(std::string str)
 	return vec;
 }
 
-bool Server::isNickUsed(std::string nick) {
+std::vector<std::string> splitKeys(std::string cmd, size_t size)
+{
+	std::vector<std::string> tokens;
+	std::string str;
+	size_t pos = 0;
+
+	while (pos < cmd.size()) {
+		if (cmd[pos] != ',')
+			str += cmd[pos];
+		else {
+			tokens.push_back(str);
+			str.clear();
+		}
+		++pos;
+	}
+	if (!str.empty())
+		tokens.push_back(str);
+	while (tokens.size() < size)
+		tokens.push_back("");
+	return tokens;
+}
+
+bool Server::isNickUsed(std::string nick, int fd) {
 	client_it it = clients.begin();
 
-	if (nick == "bot")
-		return false;
 	while (it != clients.end()) {
-		if (!((*it).getNickname()).compare(nick))
+		if (!((*it).getNickname()).compare(nick) && (*it).getFd() != fd)
 			return true;
 		it++;
 	}
@@ -102,10 +122,10 @@ bool Server::isNickUsed(std::string nick) {
 }
 
 bool isNickValid(std::string nick) {
-	if (nick[0] == '#' || nick[0] == ':' || nick[0] == '&')
+	if (std::isdigit(nick[0]))
 		return false;
 	for (size_t i = 0; i < nick.size(); i++)
-		if (!std::isalnum(nick[i]))
+		if (!std::isalnum(nick[i]) && nick[i] != '_' && nick[i] != '-')
 			return false;
 	return true;
 }

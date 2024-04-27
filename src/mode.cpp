@@ -44,32 +44,36 @@ void Server::topicMode(int fd, char opr, std::string chan) {
 }
 
 void Server::operatorMode(int fd, char opr, std::string chan, std::string nick) {
-	Client* cli = getClient(nick);
-	std::string clNick = cli->getNickname();
+	Client* target = getClient(nick);
+	Client* cli = getClient(fd);
 	Channel* ch = getChannel(chan);
 	std::string mode;
+
 	if (nick.empty()) {
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
 	}
-	if (!ch->isAdmin((*cli)) && !ch->isUser(*cli)) {
-		replies(fd, ERR_USERNOTINCHANNEL(cli->getNickname(), ch->getName())); return;
+	if (!target) {
+		replies(fd, ERR_NOSUCHNICK(cli->getNickname(), nick)); return;
+	}
+	if (!ch->isAdmin((*target)) && !ch->isUser(*target)) {
+		replies(fd, ERR_USERNOTINCHANNEL(target->getNickname(), ch->getName())); return;
 	}
 	if (opr == '+') {
-		if (ch->isAdmin(*cli))
-			return;
-		ch->rmUser(*cli);
-		ch->addAdmin(*cli);
+		if (!ch->isAdmin(*target)) {
+			ch->rmUser(*target);
+			ch->addAdmin(*target);
+		}
 		mode = "+o";
 	}
 	else if (opr == '-') {
-		if (!ch->isAdmin(*cli))
-			return;
+		if (ch->isAdmin(*target)) {
+			ch->rmUser(*target);
+			ch->addUser(*target);
+		}
 		mode = "-o";
-		ch->rmUser(*cli);
-		ch->addUser(*cli);
 	}
-	sendToAllUser(fd, ch, RPL_MODECHANNEL(clNick, cli->getUsername(), cli->getIpadd(), chan, mode, nick));
-	replies(fd, RPL_MODECHANNEL(clNick, cli->getUsername(), cli->getIpadd(), chan, mode, nick));
+	sendToAllUser(fd, ch, RPL_MODECHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), chan, mode, nick));
+	replies(fd, RPL_MODECHANNEL(cli->getNickname(), cli->getUsername(), cli->getIpadd(), chan, mode, nick));
 }
 
 void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
@@ -88,9 +92,9 @@ void Server::limitMode(int fd, char opr, std::string chan, std::string limit) {
 	if (opr == '+') {
 		if (ch->l && ch->limit == lim)
 			return;
-		mode = "+l";
 		ch->l = true;
 		ch->limit = lim;
+		mode = "+l";
 	}
 	if (opr == '-') {
 		if (!ch->l)
@@ -112,9 +116,12 @@ void Server::keyMode(int fd, char opr, std::string chan, std::string key) {
 		if (key.empty()) {
 			replies(fd, ERR_NEEDMOREPARAMS(getClient(fd)->getNickname())); return;
 		}
-		mode = "+k";
+		if (ch->k) {
+			ch->setKey(key); return;
+		}
 		ch->k = true;
 		ch->setKey(key);
+		mode = "+k";
 	}
 	if (opr == '-') {
 		if (!ch->k)
@@ -128,17 +135,18 @@ void Server::keyMode(int fd, char opr, std::string chan, std::string key) {
 
 void Server::modeExec(int fd, std::vector<std::string> cmd) {
 	std::string opt = cmd[2];
+	std::vector<std::string> args;
 
-	std::vector<std::string> args(cmd[2].size());
 	for (size_t i = 3; i < cmd.size(); i++)
-		args[i - 3] = cmd[i];
+		args.push_back(cmd[i]);
+	while (args.size() < opt.size())
+		args.push_back("");	
 
 	for (size_t i = 1; i < opt.size(); i++) {
 		if ((opt[0] != '-' && opt[0] != '+') || !isMode(opt[i])) {
 			replies(fd, ERR_UNKNOWNMODE(getClient(fd)->getNickname(), opt)); return;
 		}
 	}
-	
 	size_t j = 0;
 	for (size_t i = 1; i < opt.size(); i++) {
 		if (opt[i] == 'i')

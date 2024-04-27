@@ -12,6 +12,7 @@ class Client {
 		bool auth;
 
 	public:
+		std::string buff;
 		Client() : registred(false), admin(false), auth(false) {};
 		
 		std::string getNickname() {return nickName;}

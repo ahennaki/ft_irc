@@ -26,14 +26,12 @@ void Server::joinCmd(int fd, std::vector<std::string> cmd) {
 		replies(fd, ERR_NEEDMOREPARAMS(cli->getNickname())); return;
 	}
 	std::vector<std::string> chans = ft_split(cmd[1], ',');
-	std::vector<std::string> keys(chans.size());
-	// std::vector<std::string> vec;
-	// if (!cmd[2].empty()) {
-	// 	vec = ft_split(cmd[2], ',');
-	// 	for (size_t i = 0; i < vec.size(); i++) {
-	// 		keys[i] = vec[i];
-	// 	}
-	// }
+	std::vector<std::string> keys;
+	if (cmd.size() >= 3) {
+		keys = splitKeys(cmd[2], chans.size());
+	}
+	while (keys.size() <= chans.size())
+		keys.push_back("");
 
 	if (chans.size() == 1 && chans[0].size() == 1 && !chans[0].compare("0")) {
 		partChannels(fd); return;

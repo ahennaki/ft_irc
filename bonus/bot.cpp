@@ -24,7 +24,8 @@ int main(int ac, char **av) {
         std::cout << "bytes " << bytes << std::endl;
         if (bytes > 0) {
           str = data;
-          if (str.substr(0, 38) == ":irc.42.chat 464 * :Password incorrect") {
+          if (str.substr(0, 38) == ":irc.42.chat 464 * :Password incorrect"
+          || str.substr(0, 48) == ":irc.42.chat 433 bot :Nickname is already in use") {
             std::cout << data;
             break;
           }

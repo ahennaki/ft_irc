@@ -28,7 +28,7 @@ bool Channel::isAdmin(Client client) {
 bool Channel::isUser(Client client) {
 	client_it it = users.begin();
 	while (it != users.end()) {
-		if (!((*it).getNickname()).compare(client.getNickname()))
+		if ((*it).getFd() == client.getFd())
 			return true;
 		it++;
 	}

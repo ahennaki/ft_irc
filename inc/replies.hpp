@@ -21,6 +21,7 @@
 #define ERR_BADCHANNELKEY(client, chan) (":irc.42.chat 475 " + client + " " + chan + " :Cannot join channel (+k)\r\n")
 #define ERR_CHANOPRIVSNEEDED(chan) (":irc.42.chat 482 " + chan + " :You're not a channel operator\r\n")
 
+#define RPL_CHANGENICK(client, user, ip, nick) (":" + client + "!~" + user + "@" + ip + " NICK :" + nick + "\r\n")
 #define RPL_JOINCHANNEL(client, user, ip, chan) (":" + client + "!~" + user + "@" + ip + " JOIN " + chan + "\r\n")
 #define RPL_INVITEDCHANNEL(client, user, ip, chan) (":" + client + "!~" + user + "@" + ip + " INVITE " + chan + "\r\n")
 #define RPL_KICKEDCHANNEL(client, user, ip, chan, nick) (":" + client + "!~" + user + "@" + ip + " KICK " + chan + " " + nick + "\r\n")

@@ -15,3 +15,5 @@ bool isMode(char m);
 int toInt(std::string& input);
 std::string toString(int& input);
 
+std::vector<std::string> splitKeys(std::string str, size_t size);
+

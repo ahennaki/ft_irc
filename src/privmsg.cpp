@@ -62,9 +62,9 @@ void Server::clientPrivmsg(int fd, std::string nick, std::string msg) {
 		replies(fd, ERR_NOSUCHNICK(cliNick, nick)); return;
 	}
 	if (msg[0] == ':')
-		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, msg));
+		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), nick, msg));
 	else
-		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), target->getIpadd(), nick, ":" + str[0]));
+		replies(target->getFd(), RPL_PRIVMSGCHANNEL(cliNick, cli->getUsername(), cli->getIpadd(), nick, ":" + str[0]));
 }
 
 void Server::privmsgCmd(int fd, std::string cmd) {

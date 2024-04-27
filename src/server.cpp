@@ -16,7 +16,7 @@ void Server::startServer() {
   if (serverSocket == -1)
     throw(std::runtime_error("Error creating socket."));
 
-  int optval = 0;
+  int optval = 1;
   if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &optval,
                  sizeof(optval)) == -1)
     throw(std::runtime_error("Error: setsockopt faild."));
@@ -87,17 +87,14 @@ void Server::acceptClient() {
 void Server::getMessage(int fd) {
   std::vector<std::string> cmd;
   char msg[1024];
-  std::string buff;
+  // std::string buff;
   ssize_t bytes;
-  while (true) {
+  Client* cli = getClient(fd);
 
-    bzero(msg, sizeof(msg));
-    bytes = recv(fd, msg, sizeof(msg) - 1, 0);
-    buff += msg;
-    if (bytes <= 0 || (bytes > 0 && buff.find_first_of("\r\n") != std::string::npos))
-      break;
-  }
-  std::cout << "RECIVE MSG: " << buff;
+  bzero(msg, sizeof(msg));
+  bytes = recv(fd, msg, sizeof(msg) - 1, 0);
+  cli->buff += msg;
+  std::cout << "RECIVE MSG: " << cli->buff;
 
   if (bytes <= 0) {
     std::cout << "Client \"" << fd << "\" Disconnected" << std::endl;
@@ -105,12 +102,14 @@ void Server::getMessage(int fd) {
     rmClient(fd);
     close(fd);
   } else {
-
-    cmd = splitMessage(buff);
-    str_it it = cmd.begin();
-    while (it != cmd.end()) {
-      execute(*it, fd);
-      it++;
+    if (cli->buff.find_first_of("\r\n") != std::string::npos) {
+      cmd = splitMessage(cli->buff);
+      str_it it = cmd.begin();
+      while (it != cmd.end()) {
+        execute(*it, fd);
+        it++;
+      }
+      cli->buff.clear();
     }
   }
 }
@@ -231,32 +230,31 @@ void Server::botReseveMsg(int fd, std::string msg) {
   }
   user = parccing(readBuffer);
 
+  Client* bot = getClient("bot");
+
   if (user.existe == true) {
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                                   cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                                   bot->getIpadd(), cli->getNickname(),
                                    user.name + " create this accout at " +
                                        user.dateCreation));
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                                   cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                                   bot->getIpadd(), cli->getNickname(),
                                    ":LINK :" + url));
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                                   cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                                   bot->getIpadd(), cli->getNickname(),
                                    ":Bio " + user.bio));
-    replies(fd,
-            RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                               cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                               bot->getIpadd(), cli->getNickname(),
                                ":Number of Followers    " + user.followers));
-    replies(fd,
-            RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                               cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                               bot->getIpadd(), cli->getNickname(),
                                ":Number of Following    " + user.following));
-    replies(fd,
-            RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                               cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                               bot->getIpadd(), cli->getNickname(),
                                ":Number of public repos " + user.public_repo));
   } else {
-    replies(fd, RPL_PRIVMSGCHANNEL(cli->getNickname(), cli->getUsername(),
-                                   cli->getIpadd(), cli->getNickname(),
+    replies(fd, RPL_PRIVMSGCHANNEL(bot->getNickname(), bot->getUsername(),
+                                   bot->getIpadd(), cli->getNickname(),
                                    ":User not found!"));
   }
 }
