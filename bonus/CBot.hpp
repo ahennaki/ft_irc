@@ -18,38 +18,38 @@
 
 class Bot {
 private:
-  std::string pass;
-  int port;
-  std::string host;
-  pollfd _fds;
-  sockaddr_in serverAddress;
-  sockaddr_in HttpAddress;
-  std::string ApiBuffer;
-  int _servSock;
-  
+	std::string pass;
+	int port;
+	std::string host;
+	pollfd _fds;
+	sockaddr_in serverAddress;
+	sockaddr_in HttpAddress;
+	std::string ApiBuffer;
+	int _servSock;
+	
 public:
-  Bot(int servSock, int ac, char **av);
+	Bot(int servSock, int ac, char **av);
 
-  void ConnectIRC();
+	void ConnectIRC();
 
-  std::string getResponse(std::string name);
-  void error(std::string msg);
-  bool Send(int socket, std::string msg);
-  const int &getIrcServer();
-  pollfd CreatFd(int fd);
-  struct pollfd *FdData();
+	std::string getResponse(std::string name);
+	void error(std::string msg);
+	bool Send(int socket, std::string msg);
+	const int &getIrcServer();
+	pollfd CreatFd(int fd);
+	struct pollfd *FdData();
 
-  int servSock() const ;
+	int servSock() const ;
 };
 
 typedef struct s_usergit {
-  bool existe;
-  std::string name;
-  std::string bio;
-  std::string followers;
-  std::string following;
-  std::string public_repo;
-  std::string dateCreation;
+	bool existe;
+	std::string name;
+	std::string bio;
+	std::string followers;
+	std::string following;
+	std::string public_repo;
+	std::string dateCreation;
 } UserGit;
 
 UserGit parccing(std::string Buffer);

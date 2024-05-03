@@ -78,11 +78,11 @@ class Server {
 
 		void modeCmd(int fd, std::vector<std::string> cmd);
 		void modeExec(int fd, std::vector<std::string> cmd);
-		void inviteOnly(int fd, char opr, std::string chan);
-		void topicMode(int fd, char opr, std::string chan);
-		void operatorMode(int fd, char opr, std::string chan, std::string nick);
-		void limitMode(int fd, char opr, std::string chan, std::string limit);
-		void keyMode(int fd, char opr, std::string chan, std::string key);
+		std::string inviteOnly(char opr, std::string chan);
+		std::string topicMode(char opr, std::string chan);
+		std::string operatorMode(int fd, char opr, std::string chan, std::string nick);
+		std::string limitMode(int fd, char opr, std::string chan, std::string limit);
+		std::string keyMode(int fd, char opr, std::string chan, std::string key);
 
 		void execute(std::string cmd, int fd);
 		void registerClient(int fd);

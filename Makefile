@@ -7,16 +7,17 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98 -g
 RM = rm -rf
 
 BONUS_SRCS = bonus/bot.cpp bonus/CBot.cpp \
-		src/server.cpp src/client.cpp src/utils.cpp src/channel.cpp \
+		src/bot.cpp src/server.cpp src/client.cpp src/utils.cpp src/channel.cpp \
 		src/auth.cpp src/quit.cpp src/join.cpp src/part.cpp src/mode.cpp \
 		src/invite.cpp src/topic.cpp src/kick.cpp src/privmsg.cpp
-
-
 
 SRCS = main.cpp src/server.cpp src/client.cpp src/utils.cpp src/channel.cpp \
-		src/auth.cpp src/quit.cpp src/join.cpp src/part.cpp src/mode.cpp \
+		src/bot.cpp src/auth.cpp src/quit.cpp src/join.cpp src/part.cpp src/mode.cpp \
 		src/invite.cpp src/topic.cpp src/kick.cpp src/privmsg.cpp
-INC = inc/server.hpp inc/client.hpp inc/utils.hpp inc/replies.hpp inc/utils.hpp inc/topic.hpp bonus/CBot.hpp
+
+INC = inc/server.hpp inc/client.hpp inc/utils.hpp inc/replies.hpp inc/utils.hpp inc/topic.hpp \
+		bonus/CBot.hpp
+
 OBJS = $(SRCS:.cpp=.o)
 
 OBJS_B = $(BONUS_SRCS:.cpp=.o)
